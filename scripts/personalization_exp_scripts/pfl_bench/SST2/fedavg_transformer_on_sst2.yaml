@@ -14,7 +14,13 @@ federate:
 data:
   root: 'glue'
   type: 'sst2@huggingface_datasets'
-  args: [{'load_disk_dir': 'huggingface/datasets/glue/sst2', 'hg_cache_dir': 'huggingface', 'max_len': 128, 'val_as_dummy_test': True, 'part_train_dummy_val': 0.2} ]
+  args: [{
+      #'load_disk_dir': 'huggingface/datasets/glue/sst2',
+      #'hg_cache_dir': 'huggingface',
+      'max_len': 128,
+      'val_as_dummy_test': True,
+      'part_train_dummy_val': 0.2
+  }]
   batch_size: 64
   splitter: 'lda'
   splitter_args: [ { 'alpha': 0.4, 'min_size': 1} ]
@@ -33,4 +39,7 @@ trainer:
   type: nlptrainer
 eval:
   freq: 5
-  metrics: ['acc', 'correct', 'f1']
+  metrics: [
+      'acc', 'correct'
+      #, 'f1'
+  ]

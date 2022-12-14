@@ -78,7 +78,9 @@ class MetricCalculator(object):
                 raise RuntimeError('Shape not match!')
 
         # check shape and type
-        if not isinstance(y_true, np.ndarray) or not sparse.isspmatrix_csr(y_true):
+        print(y_true)
+        print(type(y_true))
+        if not isinstance(y_true, np.ndarray) and not sparse.isspmatrix_csr(y_true):
             raise RuntimeError('Type not support!')
         if not y_true.ndim == 2:
             raise RuntimeError(

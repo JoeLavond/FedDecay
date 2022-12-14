@@ -57,7 +57,7 @@ def get_transformer(model_config, local_data):
         model = model_func_dict[model_config.task.lower()].from_pretrained(
             path,
             num_labels=model_config.out_channels,
-            local_files_only=True,
+            local_files_only=False,
             cache_dir=os.path.join("huggingface", "transformers"))
     else:
         model = model_func_dict[model_config.task.lower()].from_pretrained(

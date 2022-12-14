@@ -1,0 +1,56 @@
+use_gpu: True
+device: 0
+seed: 1
+
+early_stop:
+    patience: 5
+
+federate:
+    mode: standalone
+    total_round_num: 500
+    client_num: 50
+    sample_client_rate: 0.2
+    unseen_clients_rate: 0.2
+
+data:
+    root: 'glue'
+    type: 'sst2@huggingface_datasets'
+    args: [{
+        #'hg_cache_dir': 'huggingface', 
+        #'load_disk_dir': 'huggingface/datasets/glue/sst2', 
+        'max_len': 128, 
+        'part_train_dummy_val': 0.2,
+        'val_as_dummy_test': true
+    }]
+    splitter: 'lda'
+    splitter_args: [{'alpha': 0.5}]
+
+dataloader:
+    batch_size: 64
+
+model:
+    type: 'google/bert_uncased_L-2_H-128_A-2@transformers'
+    task: 'SequenceClassification'
+    out_channels: 2
+
+criterion:
+    type: CrossEntropyLoss
+
+trainer:
+    type: nlptrainer
+
+train:
+    scheduler:
+        type: decay
+
+grad:
+    grad_clip: 5.0
+
+finetune:
+    before_eval: true
+    local_update_steps: 5
+    batch_or_epoch: epoch
+
+eval:
+    freq: 5
+    metrics: ['acc', 'correct', 'f1']

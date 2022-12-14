@@ -284,7 +284,7 @@ def load_external_data(config=None):
             try:
                 tokenizer = AutoTokenizer.from_pretrained(
                     config.model.type.split('@')[0],
-                    local_files_only=True,
+                    local_files_only=False,
                     cache_dir=os.path.join(os.getcwd(), "huggingface"))
             except:
                 logging.error("")
@@ -428,7 +428,7 @@ def load_external_data(config=None):
             logger.info("To load huggingface tokenizer")
             tokenizer = AutoTokenizer.from_pretrained(
                 config.model.type.split('@')[0],
-                local_files_only=True,
+                local_files_only=False,
                 cache_dir=os.path.join(hugging_face_path, "transformers"))
 
         for split in dataset:
