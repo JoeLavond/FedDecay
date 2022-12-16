@@ -114,6 +114,10 @@ def get_trainer(model=None,
         trainer = FedEMTrainer(model_nums=config.model.model_num_per_trainer,
                                base_trainer=trainer)
 
+    elif config.federate.method.lower() == "decay":
+        from federatedscope.core.trainers.trainer_exact_decay import wrap_exact_decay
+        trainer = wrap_exact_decay(trainer)
+
     # attacker plug-in
     if is_attacker:
         logger.info(

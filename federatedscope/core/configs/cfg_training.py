@@ -9,6 +9,9 @@ def extend_training_cfg(cfg):
     cfg.trainer = CN()
 
     cfg.trainer.type = 'general'
+    # ------
+    cfg.trainer.beta = 1.0
+    # ------
     cfg.trainer.finetune = CN()
     cfg.trainer.finetune.before_eval = False
     cfg.trainer.finetune.steps = 5

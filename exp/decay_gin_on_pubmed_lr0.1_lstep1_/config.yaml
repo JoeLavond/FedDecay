@@ -57,7 +57,7 @@ data:
   target_transform: []
   transform: []
   type: pubmed
-device: -1
+device: 0
 distribute:
   use: false
 early_stop:
@@ -85,7 +85,7 @@ eval:
   - test
   - val
   task_type: classification
-expname: FedAvg_gin_on_pubmed_lr0.25_lstep1_
+expname: decay_gin_on_pubmed_lr0.1_lstep1_
 expname_tag: ''
 federate:
   batch_or_epoch: batch
@@ -96,7 +96,7 @@ federate:
   join_in_info: []
   local_update_steps: 1
   make_global_eval: false
-  method: FedAvg
+  method: decay
   mode: standalone
   online_aggr: false
   restore_from: ''
@@ -176,11 +176,11 @@ nbafl:
 optimizer:
   cfg_check_funcs: []
   grad_clip: -1.0
-  lr: 0.25
+  lr: 0.1
   momentum: 0.0
   type: SGD
   weight_decay: 0.0005
-outdir: exp/FedAvg_gin_on_pubmed_lr0.25_lstep1_/sub_exp_20221214222502
+outdir: exp/decay_gin_on_pubmed_lr0.1_lstep1_
 personalization:
   K: 5
   apfl_alpha: 0.0
@@ -188,7 +188,7 @@ personalization:
   cfg_check_funcs: []
   local_param: []
   local_update_steps: 1
-  lr: 0.25
+  lr: 0.1
   regular_weight: 0.1
   share_non_trainable_para: false
 regularizer:
@@ -199,6 +199,7 @@ seed: 1
 sgdmf:
   use: false
 trainer:
+  beta: 1.0
   cfg_check_funcs: []
   finetune:
     before_eval: false

@@ -7,6 +7,9 @@ early_stop:
 
 federate:
     mode: standalone
+    method: 'decay'
+    #local_update_steps: 1
+    batch_or_epoch: epoch
     total_round_num: 500
     client_num: 50
     sample_client_rate: 0.2
@@ -22,34 +25,27 @@ data:
         'part_train_dummy_val': 0.2,
         'val_as_dummy_test': true
     }]
-    splitter: 'lda'
-    splitter_args: [{'alpha': 0.5}]
-
-dataloader:
     batch_size: 64
+    splitter: 'lda'
+    splitter_args: [{'alpha': 0.4}]
+    num_workers: 0
 
 model:
     type: 'google/bert_uncased_L-2_H-128_A-2@transformers'
     task: 'SequenceClassification'
     out_channels: 2
 
+optimizer:
+    #lr: 0.3
+    weight_decay: 0.0
+    grad_clip: 5.0
+
 criterion:
     type: CrossEntropyLoss
 
 trainer:
     type: nlptrainer
-
-train:
-    scheduler:
-        type: decay
-
-grad:
-    grad_clip: 5.0
-
-finetune:
-    before_eval: true
-    local_update_steps: 5
-    batch_or_epoch: epoch
+    #beta: 1.0
 
 eval:
     freq: 5
