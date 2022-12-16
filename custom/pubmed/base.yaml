@@ -1,7 +1,6 @@
 asyn:
-  cfg_check_funcs: []
   min_received_num: 2
-  min_received_rate: -1.0
+  min_received_rate: -1
   timeout: 3
   use: true
 attack:
@@ -9,7 +8,6 @@ attack:
   alpha_prop_loss: 0
   attack_method: ''
   attacker_id: -1
-  cfg_check_funcs: []
   classifier_PIA: randomforest
   info_diff_type: l2
   inject_round: 0
@@ -18,10 +16,8 @@ attack:
   reconstruct_optim: Adam
   target_label_ind: -1
 backend: torch
-cfg_check_funcs: []
 cfg_file: ''
 criterion:
-  cfg_check_funcs: []
   type: CrossEntropyLoss
 data:
   args: []
@@ -30,16 +26,12 @@ data:
   - 0.5
   - 0.5
   - 0.5
-  cfg_check_funcs: []
   drop_last: false
   graphsaint:
-    cfg_check_funcs: []
     num_steps: 30
     walk_length: 2
-  labelwise_boxplot: false
   loader: ''
   num_workers: 0
-  plot_boxplot: false
   pre_transform: []
   root: data/
   server_holds_all: false
@@ -53,22 +45,20 @@ data:
   - 0.1
   splitter: louvain
   splitter_args: []
-  subsample: 1.0
+  subsample: 1
   target_transform: []
   transform: []
   type: pubmed
-device: 0
+device: -1
 distribute:
   use: false
 early_stop:
-  cfg_check_funcs: []
-  delta: 0.0
+  delta: 0
   improve_indicator_mode: best
   patience: 5
   the_smaller_the_better: true
 eval:
   best_res_update_round_wise_key: val_loss
-  cfg_check_funcs: []
   freq: 5
   metrics:
   - acc
@@ -84,38 +74,36 @@ eval:
   split:
   - test
   - val
-  task_type: classification
-expname: decay_gin_on_pubmed_lr0.1_lstep1_
+expname: FedAvg_gin_on_pubmed_lr0.5_lstep6_
 expname_tag: ''
 federate:
   batch_or_epoch: batch
-  cfg_check_funcs: []
   client_num: 5
   data_weighted_aggr: false
   ignore_weight: false
   join_in_info: []
-  local_update_steps: 1
+  local_update_steps: 6
   make_global_eval: false
-  method: decay
+  method: FedAvg
   mode: standalone
   online_aggr: false
   restore_from: ''
   sample_client_num: 4
-  sample_client_rate: -1.0
+  sample_client_rate: -1
   save_to: ''
   share_local_model: false
   total_round_num: 500
   unseen_clients_rate: 0.2
   use_ss: false
+federate.local_update_steps: 6
 fedopt:
   use: false
 fedprox:
   use: false
 fedsageplus:
-  a: 1.0
-  b: 1.0
-  c: 1.0
-  cfg_check_funcs: []
+  a: 1
+  b: 1
+  c: 1
   fedgen_epoch: 200
   gen_hidden: 128
   hide_portion: 0.5
@@ -124,17 +112,14 @@ fedsageplus:
 gcflplus:
   EPS_1: 0.05
   EPS_2: 0.1
-  cfg_check_funcs: []
   seq_length: 5
   standardize: false
 hpo:
-  cfg_check_funcs: []
   fedex:
-    cfg_check_funcs: []
-    cutoff: 0.0
+    cutoff: 0
     diff: false
     flatten_ss: true
-    gamma: 0.0
+    gamma: 0
     num_arms: 16
     sched: auto
     ss: ''
@@ -145,19 +130,16 @@ hpo:
   log_scale: false
   metric: client_summarized_weighted_avg.test_loss
   pbt:
-    cfg_check_funcs: []
     max_stage: 5
     perf_threshold: 0.1
   plot_interval: 1
   scheduler: bruteforce
   sha:
     budgets: []
-    cfg_check_funcs: []
     elim_rate: 3
     elim_round_num: 3
   working_folder: hpo
 model:
-  cfg_check_funcs: []
   dropout: 0.5
   embed_size: 8
   graph_pooling: mean
@@ -174,36 +156,30 @@ model:
 nbafl:
   use: false
 optimizer:
-  cfg_check_funcs: []
-  grad_clip: -1.0
-  lr: 0.1
-  momentum: 0.0
+  grad_clip: -1
+  lr: 0.5
+  momentum: 0
   type: SGD
   weight_decay: 0.0005
-outdir: exp/decay_gin_on_pubmed_lr0.1_lstep1_
+optimizer.lr: 0.5
+outdir: exp_pfl_bench/FedAvg_gin_on_pubmed_lr0.5_lstep6_
 personalization:
   K: 5
-  apfl_alpha: 0.0
-  beta: 1.0
-  cfg_check_funcs: []
+  beta: 1
   local_param: []
   local_update_steps: 1
-  lr: 0.1
+  lr: 0.25
   regular_weight: 0.1
   share_non_trainable_para: false
 regularizer:
-  cfg_check_funcs: []
-  mu: 0.0
+  mu: 0
   type: ''
 seed: 1
 sgdmf:
   use: false
 trainer:
-  beta: 1.0
-  cfg_check_funcs: []
   finetune:
     before_eval: false
-    cfg_check_funcs: []
     freeze_param: ''
     lr: 0.01
     steps: 5
@@ -212,6 +188,8 @@ use_gpu: true
 verbose: 1
 vertical:
   use: false
-wandb:
-  use: false
-
+#wandb:
+  #name_project: pFL-bench
+  #name_user: daoyuan
+  #online_track: true
+  #use: true

@@ -9,9 +9,13 @@ def extend_training_cfg(cfg):
     cfg.trainer = CN()
 
     cfg.trainer.type = 'general'
+
     # ------
+    cfg.trainer.batch_or_epoch = 'epoch'
     cfg.trainer.beta = 1.0
+    cfg.trainer.finetune_beta = 1.0
     # ------
+
     cfg.trainer.finetune = CN()
     cfg.trainer.finetune.before_eval = False
     cfg.trainer.finetune.steps = 5
