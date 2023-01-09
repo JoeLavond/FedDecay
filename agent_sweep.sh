@@ -15,11 +15,11 @@ screen -dm bash -c "
 "
 
 # screen -dm bash -c "
-    # source activate fs;
-    # CUDA_VISIBLE_DEVICES=2 wandb agent joelavond/decay/${1};
+    # # source activate fs;
+    # # CUDA_VISIBLE_DEVICES=2 wandb agent joelavond/decay/${1};
 # "
-
-screen -dm bash -c "
-    source activate fs;
-    CUDA_VISIBLE_DEVICES=3 wandb agent joelavond/decay/${1};
-"
+#
+# screen -dm bash -c "
+    # source activate fs;
+    # CUDA_VISIBLE_DEVICES=3 wandb agent joelavond/decay/${1};
+# "

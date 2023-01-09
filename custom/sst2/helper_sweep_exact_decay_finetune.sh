@@ -9,12 +9,12 @@ do
 done
 
 python federatedscope/main.py \
-    --cfg custom/pubmed/base.yaml \
-    outdir 'custom/pubmed/wandb' \
+    --cfg custom/sst2/base_finetune.yaml \
+    outdir 'custom/sst2/wandb' \
     wandb.use True \
     wandb.name_project 'decay' \
     wandb.name_user 'joelavond' \
-    expname pubmed--n_epochs${local_update_steps}--lr${lr}--beta${beta}--exact \
+    expname sst2--n_epochs${local_update_steps}--lr${lr}--beta${beta}--exact--finetune \
     federate.method 'decay' \
     federate.local_update_steps ${local_update_steps} \
     optimizer.lr ${lr} \

@@ -1,7 +1,6 @@
-program: custom/sst2/helper_sweep_exact_decay.sh
+program: custom/femnist--s02/helper_sweep_exact_decay_finetune.sh
 project: decay
-group: sst2
-job_type: exact
+name: femnist--s02--exact_decay--finetune
 
 method: grid
 metric:
