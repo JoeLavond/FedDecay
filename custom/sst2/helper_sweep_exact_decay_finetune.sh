@@ -14,9 +14,10 @@ python federatedscope/main.py \
     wandb.use True \
     wandb.name_project 'decay' \
     wandb.name_user 'joelavond' \
-    expname sst2--n_epochs${local_update_steps}--lr${lr}--beta${beta}--exact--finetune \
+    expname sst2--n_epochs${local_update_steps}--lr${lr}--beta${beta}--finetune_lr${ft_lr}--exact \
     federate.method 'decay' \
     federate.local_update_steps ${local_update_steps} \
     optimizer.lr ${lr} \
-    trainer.beta ${beta}
+    trainer.beta ${beta} \
+    trainer.finetune.lr ${ft_lr}
 
