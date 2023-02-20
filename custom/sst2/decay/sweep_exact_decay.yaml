@@ -1,6 +1,6 @@
-program: custom/femnist--s02/helper_sweep_exact_decay_finetune.sh
+program: custom/sst2/decay/helper_sweep_exact_decay.sh
 project: decay
-name: femnist--s02--exact_decay--finetune
+name: sst2--exact_decay
 
 method: grid
 metric:
@@ -19,7 +19,7 @@ parameters:
     local_update_steps:
         values: [3, 6]
     beta:
-        values: [0.2, 0.4, 0.6, 0.8]
+        values: [0.2, 0.4, 0.6, 0.8] 
 
 early_terminate:
     type: hyperband

@@ -9,14 +9,15 @@ do
 done
 
 python federatedscope/main.py \
-    --cfg custom/femnist--s02/base_finetune.yaml \
-    outdir 'custom/femnist--s02/wandb' \
+    --cfg custom/cifar--alpha0.5/base_finetune.yaml \
+    outdir 'custom/cifar--alpha0.5/wandb' \
     wandb.use True \
-    wandb.name_project 'exact_decay' \
+    wandb.name_project 'decay' \
     wandb.name_user 'joelavond' \
-    expname femnist--s02--n_epochs${local_update_steps}--lr${lr}--beta${beta}--exact \
-    federate.method 'exact_decay' \
+    federate.method 'Ditto' \
+    expname cifar--alpha0.5--n_epochs${local_update_steps}--lr${lr}--regular_weight${regular_weight} \
     federate.local_update_steps ${local_update_steps} \
     optimizer.lr ${lr} \
-    trainer.beta ${beta}
+    personalization.regular_weight ${regular_weight}
+
 

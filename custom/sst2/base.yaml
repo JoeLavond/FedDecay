@@ -21,9 +21,9 @@ criterion:
   type: CrossEntropyLoss
 data:
   args:
-  - hg_cache_dir: huggingface
-    load_disk_dir: huggingface/datasets/glue/sst2
-    max_len: 128
+    #hg_cache_dir: huggingface
+    #load_disk_dir: huggingface/datasets/glue/sst2
+  - max_len: 128
     part_train_dummy_val: 0.2
     val_as_dummy_test: true
   batch_size: 64

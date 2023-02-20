@@ -8,10 +8,12 @@ from federatedscope.core.trainers.trainer_fedprox import wrap_fedprox_trainer
 from federatedscope.core.trainers.trainer_nbafl import wrap_nbafl_trainer, wrap_nbafl_server
 
 from federatedscope.core.trainers.trainer_exact_decay import wrap_exact_decay
+from federatedscope.core.trainers.trainer_approx_decay import wrap_approx_decay
 
 __all__ = [
     'Trainer', 'Context', 'GeneralTorchTrainer', 'GeneralMultiModelTrainer',
     'wrap_pFedMeTrainer', 'wrap_DittoTrainer', 'FedEMTrainer',
     'wrap_fedprox_trainer', 'wrap_nbafl_trainer', 'wrap_nbafl_server',
-    'wrap_exact_decay'
+
+    'wrap_exact_decay', 'wrap_approx_decay'
 ]

@@ -33,18 +33,25 @@ def wrap_exact_decay(
 
     # ---------------- action-level plug-in -----------------------
 
-    # initailize model steps at fit start
+    # initializations
     base_trainer.register_hook_in_train(
-        new_hook=_hook_on_fit_start_save_model,
+        new_hook=_hook_decay_init,
         trigger='on_fit_start',
         insert_pos=-1
     )
 
-    # save models at end of batch or epoch
+    # for exact decay at the end of every local update:
+    # save model and decay
     if batch_or_epoch == 'epoch':
 
         base_trainer.register_hook_in_train(
-            new_hook=_hook_on_end_save_model,
+            new_hook=_hook_on_start_save_model,
+            trigger='on_epoch_start',
+            insert_pos=-1
+        )
+
+        base_trainer.register_hook_in_train(
+            new_hook=_hook_on_end_decay_model,
             trigger='on_epoch_end',
             insert_pos=-1
         )
@@ -52,18 +59,20 @@ def wrap_exact_decay(
     elif batch_or_epoch == 'batch':
 
         base_trainer.register_hook_in_train(
-            new_hook=_hook_on_end_save_model,
+            new_hook=_hook_on_start_save_model,
+            trigger='on_batch_start',
+            insert_pos=-1
+        )
+
+        base_trainer.register_hook_in_train(
+            new_hook=_hook_on_end_decay_model,
             trigger='on_batch_end',
             insert_pos=-1
         )
 
-    """
-    At fit end:
-    2. Compute differences between model steps
-    3. Replace model with decayed model steps
-    """
+    # cleanup
     base_trainer.register_hook_in_train(
-        new_hook=_hook_on_fit_end_decay_model,
+        new_hook=_hook_decay_init,
         trigger='on_fit_end',
         insert_pos=-1
     )
@@ -76,53 +85,50 @@ def init_decay_ctx(base_trainer):
     ctx = base_trainer.ctx
     cfg = base_trainer.cfg
 
-    ctx.global_model = ctx.model
     ctx.batch_or_epoch = cfg.trainer.batch_or_epoch
+
+
     ctx.beta = cfg.trainer.beta
     ctx.finetune_beta = cfg.trainer.finetune_beta
 
 
-def _hook_on_fit_start_save_model(ctx):
+def _hook_decay_init(ctx):
+
+    # initialize last model for storage
+    ctx.last_model = []
+    ctx.step_iter = 0
+
+
+def _hook_on_start_save_model(ctx):
 
     # save current model as ONLY step
-    ctx.models = [ctx.global_model]
-
-def _hook_on_end_save_model(ctx):
-
-    # save current model as step
-    ctx.models.append(ctx.global_model)
+    ctx.last_model = copy.deepcopy(ctx.model)
+    ctx.step_iter += 1
 
 
-def _hook_on_fit_end_decay_model(ctx):
-
-    print()
-    print(f'current mode is {ctx.cur_mode}')
-    print(f'current beta is {ctx.beta}')
-    print(f'at fit end there exists {len(ctx.models)} iterations to decay')
+def _hook_on_end_decay_model(ctx):
 
     # iterate each parameter for all models simulataneously
-    for parameter, *parameter_value_list in zip(
-        ctx.global_model.parameters(),  # target model for updates
-        *[model.parameters() for model in ctx.models]  # each model update
+    for current_parameter, last_parameter in zip(
+        ctx.model.parameters(),  # target model for updates
+        ctx.last_model.parameters()  # last model values
     ):
 
         # compute parameter change between each successive model step
-        model_parameter_differences_list = [
-            parameter_value_list[i + 1] - parameter_value_list[i]  # step difference
-            for i in range(len(parameter_value_list) - 1)  # n - 1 differences for n steps
-        ]
+        current_weights = current_parameter.detach().clone()
+        last_weights = last_parameter.detach().clone()
+        model_difference = current_weights - last_weights
 
         # scale differences with exponential decay
-        model_parameter_differences_list = [
-            (ctx.beta ** i) * model_parameter_differences_list[i]
-            for i in range(len(model_parameter_differences_list))
-        ]
+        scaled_model_difference = (
+            ctx.beta ** (ctx.step_iter - 1)
+            * model_difference
+        )
 
         # combine decayed steps and add to the initialization
-        decayed_update = torch.stack(model_parameter_differences_list).sum(dim=0)
         with torch.no_grad():
-            parameter.copy_(
-                parameter_value_list[0] + decayed_update
+            current_parameter.copy_(
+                last_weights + scaled_model_difference
             )
 
 

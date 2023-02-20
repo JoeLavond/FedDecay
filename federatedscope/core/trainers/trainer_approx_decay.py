@@ -16,11 +16,14 @@ import types
 logger = logging.getLogger(__name__)
 
 
-def wrap_exact_decay(
+def wrap_approx_decay(
         base_trainer: Type[GeneralTorchTrainer]) -> Type[GeneralTorchTrainer]:
 
     # ---------------- attribute-level plug-in -----------------------
     init_decay_ctx(base_trainer)
+
+    #assert base_trainer.cfg.federate.batch_or_epoch == 'epoch'
+    #batch_or_epoch = base_trainer.cfg.federate.batch_or_epoch
     batch_or_epoch = base_trainer.cfg.trainer.batch_or_epoch
 
     # ------
@@ -30,22 +33,18 @@ def wrap_exact_decay(
 
     # ---------------- action-level plug-in -----------------------
 
+    # initailize model steps at fit start
+    base_trainer.register_hook_in_train(
+        new_hook=_hook_on_fit_start_save_model,
+        trigger='on_fit_start',
+        insert_pos=-1
+    )
+
+    # save models at end of batch or epoch
     if batch_or_epoch == 'epoch':
 
         base_trainer.register_hook_in_train(
-            new_hook=_hook_on_start_save_model,
-            trigger='on_epoch_start',
-            insert_pos=-1
-        )
-
-        base_trainer.register_hook_in_train(
             new_hook=_hook_on_end_save_model,
-            trigger='on_epoch_end',
-            insert_pos=-1
-        )
-
-        base_trainer.register_hook_in_train(
-            new_hook=_hook_on_end_decay_model,
             trigger='on_epoch_end',
             insert_pos=-1
         )
@@ -53,22 +52,21 @@ def wrap_exact_decay(
     elif batch_or_epoch == 'batch':
 
         base_trainer.register_hook_in_train(
-            new_hook=_hook_on_start_save_model,
-            trigger='on_batch_start',
-            insert_pos=-1
-        )
-
-        base_trainer.register_hook_in_train(
             new_hook=_hook_on_end_save_model,
             trigger='on_batch_end',
             insert_pos=-1
         )
 
-        base_trainer.register_hook_in_train(
-            new_hook=_hook_on_end_decay_model,
-            trigger='on_batch_end',
-            insert_pos=-1
-        )
+    """
+    At fit end:
+    2. Compute differences between model steps
+    3. Replace model with decayed model steps
+    """
+    base_trainer.register_hook_in_train(
+        new_hook=_hook_on_fit_end_decay_model,
+        trigger='on_fit_end',
+        insert_pos=-1
+    )
 
     return base_trainer
 
@@ -84,7 +82,7 @@ def init_decay_ctx(base_trainer):
     ctx.finetune_beta = cfg.trainer.finetune_beta
 
 
-def _hook_on_start_save_model(ctx):
+def _hook_on_fit_start_save_model(ctx):
 
     # save current model as ONLY step
     ctx.models = [ctx.global_model]
@@ -95,7 +93,12 @@ def _hook_on_end_save_model(ctx):
     ctx.models.append(ctx.global_model)
 
 
-def _hook_on_end_decay_model(ctx):
+def _hook_on_fit_end_decay_model(ctx):
+
+    print()
+    print(f'current mode is {ctx.cur_mode}')
+    print(f'current beta is {ctx.beta}')
+    print(f'at fit end there exists {len(ctx.models)} iterations to decay')
 
     # iterate each parameter for all models simulataneously
     for parameter, *parameter_value_list in zip(

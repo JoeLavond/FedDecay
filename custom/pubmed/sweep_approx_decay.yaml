@@ -1,6 +1,6 @@
-program: custom/femnist--s02/helper_sweep_exact_decay_finetune.sh
+program: custom/pubmed/helper_sweep_approx_decay.sh
 project: decay
-name: femnist--s02--exact_decay--finetune
+name: pubmed--approx_decay
 
 method: grid
 metric:
@@ -15,11 +15,11 @@ command:
 
 parameters:
     lr:
-        values: [0.05, 0.005, 0.5, 0.01, 0.1] 
+        values: [0.05, 0.005, 0.5, 0.01, 0.1, 1, 2] 
     local_update_steps:
         values: [3, 6]
     beta:
-        values: [0.2, 0.4, 0.6, 0.8]
+        values: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 
 early_terminate:
     type: hyperband
