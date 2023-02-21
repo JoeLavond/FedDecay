@@ -20,10 +20,6 @@ parameters:
         values: [3, 6]
     beta:
         values: [0.2, 0.4, 0.6, 0.8]
-    #ft_lr:
-        #values: [0.05, 0.005, 0.5, 0.01, 0.1]
-    #batch_size:
-        #values: [16, 32, 64, 128]
 
 early_terminate:
     type: hyperband

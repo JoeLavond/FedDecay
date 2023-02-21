@@ -49,7 +49,7 @@ data:
   target_transform: []
   transform: []
   type: pubmed
-device: -1
+device: 0
 distribute:
   use: false
 early_stop:
