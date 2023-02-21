@@ -1,6 +1,6 @@
-program: custom/sst2/decay/helper_sweep_exact_decay.sh
+program: custom/cifar--alpha5.0/decay/helper_sweep_exact_decay_finetune.sh
 project: decay
-name: sst2--exact_decay
+name: cifar--alpha5.0--exact_decay--finetune
 
 method: grid
 metric:
@@ -19,9 +19,7 @@ parameters:
     local_update_steps:
         values: [3, 6]
     beta:
-        values: [0.2, 0.4, 0.6, 0.8] 
-    batch_size:
-        values: [16, 32]
+        values: [0.2, 0.4, 0.6, 0.8]
 
 early_terminate:
     type: hyperband
