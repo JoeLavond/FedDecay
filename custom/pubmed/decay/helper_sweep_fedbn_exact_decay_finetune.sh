@@ -9,14 +9,15 @@ do
 done
 
 python federatedscope/main.py \
-    --cfg custom/sst2/base.yaml \
-    outdir 'custom/sst2/wandb' \
+    --cfg custom/pubmed/base_finetune.yaml \
+    outdir 'custom/pubmed/wandb' \
     wandb.use True \
     wandb.name_user 'joelavond' \
-    expname sst2--n_epochs${local_update_steps}--batch_size${batch_size}--lr${lr}--beta${beta}--exact \
+    personalization.local_param "['bn', 'norms']"
+    expname pubmed--n_epochs${local_update_steps}--lr${lr}--beta${beta}--fedbn--exact_decay--finetune \
     federate.method 'exact_decay' \
     federate.local_update_steps ${local_update_steps} \
-    data.batch_size ${batch_size} \
     optimizer.lr ${lr} \
     trainer.beta ${beta}
+
 

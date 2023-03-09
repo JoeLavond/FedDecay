@@ -9,14 +9,14 @@ do
 done
 
 python federatedscope/main.py \
-    --cfg custom/sst2/base.yaml \
-    outdir 'custom/sst2/wandb' \
+    --cfg custom/cora/base_finetune.yaml \
+    outdir 'custom/cora/wandb' \
     wandb.use True \
+    wandb.name_project 'exact_decay' \
     wandb.name_user 'joelavond' \
-    expname sst2--n_epochs${local_update_steps}--batch_size${batch_size}--lr${lr}--beta${beta}--exact \
+    expname cora--n_epochs${local_update_steps}--lr${lr}--beta${beta}--exact \
     federate.method 'exact_decay' \
     federate.local_update_steps ${local_update_steps} \
-    data.batch_size ${batch_size} \
     optimizer.lr ${lr} \
     trainer.beta ${beta}
 

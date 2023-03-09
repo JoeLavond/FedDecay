@@ -1,0 +1,27 @@
+program: custom/cifar--alpha0.1/ditto/helper_sweep_ditto_finetune.sh
+project: decay
+name: cifar--alpha0.1--ditto--finetune
+
+method: grid
+metric:
+    goal: maximize
+    name: best_client_summarized_weighted_avg/val_acc
+
+command:
+  - ${env}
+  - bash
+  - ${program}
+  - ${args_no_hyphens}
+
+parameters:
+    lr:
+        values: [0.05, 0.005, 0.5, 0.01, 0.1] 
+    local_update_steps:
+        values: [1, 3]
+    regular_weight:
+        values: [0.05, 0.1, 0.2, 0.5]
+
+early_terminate:
+    type: hyperband
+    min_iter: 5
+

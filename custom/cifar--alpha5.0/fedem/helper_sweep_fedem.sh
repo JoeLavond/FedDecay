@@ -9,16 +9,15 @@ do
 done
 
 python federatedscope/main.py \
-    --cfg custom/sst2/base_finetune.yaml \
-    outdir 'custom/sst2/wandb' \
+    --cfg custom/cifar--alpha5.0/base.yaml \
+    outdir 'custom/cifar--alpha5.0/wandb' \
     wandb.use True \
     wandb.name_project 'decay' \
     wandb.name_user 'joelavond' \
     federate.method 'FedEM' \
     model.model_num_per_trainer 3 \
-    expname sst2--n_epochs${local_update_steps}--batch_size${batch_size}--lr${lr} \
+    expname cifar--alpha5.0--n_epochs${local_update_steps}--lr${lr} \
     federate.local_update_steps ${local_update_steps} \
-    optimizer.lr ${lr} \
-    data.batch_size ${batch_size}
+    optimizer.lr ${lr}
 
 

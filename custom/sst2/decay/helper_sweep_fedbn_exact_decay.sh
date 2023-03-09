@@ -13,10 +13,12 @@ python federatedscope/main.py \
     outdir 'custom/sst2/wandb' \
     wandb.use True \
     wandb.name_user 'joelavond' \
-    expname sst2--n_epochs${local_update_steps}--batch_size${batch_size}--lr${lr}--beta${beta}--exact \
+    personalization.local_param "['bn', 'norms']"
+    expname sst2--n_epochs${local_update_steps}--batch_size${batch_size}--lr${lr}--beta${beta}--fedbn--exact_decay \
     federate.method 'exact_decay' \
     federate.local_update_steps ${local_update_steps} \
     data.batch_size ${batch_size} \
     optimizer.lr ${lr} \
     trainer.beta ${beta}
+
 

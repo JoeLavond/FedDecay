@@ -9,14 +9,12 @@ do
 done
 
 python federatedscope/main.py \
-    --cfg custom/sst2/base.yaml \
-    outdir 'custom/sst2/wandb' \
+    --cfg custom/cifar--alpha0.1/base_finetune.yaml \
+    outdir 'custom/cifar--alpha0.1/wandb' \
     wandb.use True \
+    wandb.name_project 'decay' \
     wandb.name_user 'joelavond' \
-    expname sst2--n_epochs${local_update_steps}--batch_size${batch_size}--lr${lr}--beta${beta}--exact \
-    federate.method 'exact_decay' \
+    expname cifar--alpha0.1--n_epochs${local_update_steps}--lr${lr} \
     federate.local_update_steps ${local_update_steps} \
-    data.batch_size ${batch_size} \
-    optimizer.lr ${lr} \
-    trainer.beta ${beta}
+    optimizer.lr ${lr}
 
