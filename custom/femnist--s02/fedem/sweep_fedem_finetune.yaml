@@ -1,6 +1,6 @@
-program: custom/sst2/fedavg/helper_sweep_fedavg.sh
-project: decay--extras
-name: sst2--fedavg
+program: custom/femnist--s02/fedem/helper_sweep_fedem_finetune.sh
+project: decay--femnist--s02
+name: femnist--s02--fedem--finetune
 
 method: grid
 metric:
@@ -18,10 +18,8 @@ parameters:
         values: [0.05, 0.005, 0.5, 0.01, 0.1] 
     local_update_steps:
         values: [1, 3, 6]
-    batch_size:
-        values: [16, 32, 64]
 
 early_terminate:
     type: hyperband
-    min_iter: 5
+    min_iter: 3
 
