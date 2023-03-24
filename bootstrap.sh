@@ -4,4 +4,4 @@
   export HTTP_PROXY=http://152.2.41.28:3128
   export https_proxy=http://152.2.41.28:3128
   export HTTPS_PROXY=http://152.2.41.28:3128
-  echo "Verify echo \$http_proxy=$http_proxy is not secure"
+  echo "Verify echo \$https_proxy=$https_proxy is not secure"
