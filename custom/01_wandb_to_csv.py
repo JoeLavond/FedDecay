@@ -97,7 +97,7 @@ method = runs_df.name.apply(
     lambda x: [method for method in methods if re.search(method, x)].pop(0)
 )
 dataset = runs_df.name.apply(lambda x: re.sub('-.*', '', x))
-finetune = runs_df.name.apply(lambda x: bool(re.search('finetune', x)))
+finetune = runs_df.name.apply(lambda x: bool(re.search('finetune', x))).astype(int)
 
 
 # Combine all extracted information
