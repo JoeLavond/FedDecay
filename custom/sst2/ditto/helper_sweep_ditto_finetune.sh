@@ -14,7 +14,7 @@ python federatedscope/main.py \
     wandb.use True \
     wandb.name_user 'joelavond' \
     federate.method 'Ditto' \
-    expname sst2--n_epochs${local_update_steps}--batch_size${batch_size}--lr${lr}--regular_weight${regular_weight} \
+    expname sst2--ditto--n_epochs${local_update_steps}--batch_size${batch_size}--lr${lr}--regular_weight${regular_weight} \
     federate.local_update_steps ${local_update_steps} \
     optimizer.lr ${lr} \
     data.batch_size ${batch_size} \
