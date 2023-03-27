@@ -12,7 +12,6 @@ python federatedscope/main.py \
     --cfg custom/sst2/base.yaml \
     outdir 'custom/sst2/wandb' \
     wandb.use True \
-    wandb.name_project 'decay' \
     wandb.name_user 'joelavond' \
     federate.method 'Ditto' \
     expname sst2--n_epochs${local_update_steps}--batch_size${batch_size}--lr${lr}--regular_weight${regular_weight} \

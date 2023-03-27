@@ -15,7 +15,7 @@ python federatedscope/main.py \
     wandb.name_user 'joelavond' \
     federate.method 'FedEM' \
     model.model_num_per_trainer 3 \
-    expname femnist--s02--n_epochs${local_update_steps}--lr${lr} \
+    expname femnist--s02--fedem--n_epochs${local_update_steps}--lr${lr} \
     federate.local_update_steps ${local_update_steps} \
     optimizer.lr ${lr}
 
