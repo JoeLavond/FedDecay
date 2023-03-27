@@ -1,5 +1,5 @@
 program: custom/pubmed/decay/helper_sweep_exact_decay_finetune.sh
-project: decay
+project: decay--pubmed
 name: pubmed--exact_decay--finetune
 
 method: grid
@@ -19,9 +19,9 @@ parameters:
     local_update_steps:
         values: [3, 6]
     beta:
-        values: [0.2, 0.4, 0.6, 0.8]
+        values: [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]
 
 early_terminate:
     type: hyperband
-    min_iter: 5
+    min_iter: 3
 

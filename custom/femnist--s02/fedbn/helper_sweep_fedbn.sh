@@ -14,7 +14,7 @@ python federatedscope/main.py \
     wandb.use True \
     wandb.name_user 'joelavond' \
     personalization.local_param "['bn', 'norms']"
-    expname femnist--s02--n_epochs${local_update_steps}--lr${lr} \
+    expname femnist--s02--fedbn--n_epochs${local_update_steps}--lr${lr} \
     federate.local_update_steps ${local_update_steps} \
     optimizer.lr ${lr}
 

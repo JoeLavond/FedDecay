@@ -12,13 +12,10 @@ python federatedscope/main.py \
     --cfg custom/femnist--s02/base_finetune.yaml \
     outdir 'custom/femnist--s02/wandb' \
     wandb.use True \
-    wandb.name_project 'decay' \
-    wandb.name_user 'joelavond' \
     federate.method 'pFedMe' \
     personalization.lr '-1.0' \
-    expname femnist--s02--n_epochs${local_update_steps}--batch_size${batch_size}--lr${lr}--regular_weight${regular_weight}--K${K} \
+    expname femnist--s02--pfedme--n_epochs${local_update_steps}--lr${lr}--regular_weight${regular_weight}--K${K} \
     federate.local_update_steps ${local_update_steps} \
     optimizer.lr ${lr} \
-    data.batch_size ${batch_size} \
     personalization.regular_weight ${regular_weight} \
     personalization.K ${K}
