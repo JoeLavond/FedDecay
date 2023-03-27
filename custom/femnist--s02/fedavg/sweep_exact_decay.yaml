@@ -1,5 +1,5 @@
 program: custom/femnist--s02/fedavg/helper_sweep_exact_decay.sh
-project: decay--extras
+project: decay--femnist--s02
 name: femnist--s02--fedavg
 
 method: grid
@@ -21,5 +21,5 @@ parameters:
 
 early_terminate:
     type: hyperband
-    min_iter: 5
+    min_iter: 3
 
