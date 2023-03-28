@@ -18,7 +18,7 @@ def main():
     args = get_args()
 
     # Project is specified by <entity/project-name>
-    runs = api.runs(f'joelavond/{args.project_name}')
+    runs = api.runs(f'joelavond/decay--{args.project_name}')
 
     summary_list, config_list, name_list = [], [], []
     for run in runs:
@@ -40,7 +40,7 @@ def main():
         "config": config_list,
         "name": name_list
         })
-    print('final runs:', runs_df.shape)
+    print('wandb runs:', runs_df.shape)
 
 
     ## Recover all metrics of interest from wandb runs
@@ -85,11 +85,11 @@ def main():
     # remove excess information from column names
     # similarly change holder for validation metric
     # drop duplicate columns
-    print(len(metrics.columns))
+    print('input metrics:', len(metrics.columns))
     metrics.columns = [re.sub('_fairness', '', re.sub('_avg', '', name)) for name in metrics.columns]
     metrics = metrics.loc[:, ~metrics.columns.duplicated()].copy()
     validation_metric = re.sub('_fairness', '', re.sub('_avg', '', validation_metric))
-    print(len(metrics.columns))
+    print('output metrics:', len(metrics.columns))
     print('new validation metric key:', validation_metric)
 
     # order metrics
@@ -100,7 +100,6 @@ def main():
     method = runs_df.name.apply(
         lambda x: [method for method in methods if re.search(method, x)].pop(0)
     )
-    dataset = runs_df.name.apply(lambda x: re.sub('-.*', '', x))
     finetune = runs_df.name.apply(lambda x: bool(re.search('finetune', x))).astype(int)
 
     # Use run name to extract relevant hyperparameters
@@ -116,13 +115,14 @@ def main():
                    and i > 0
             }
         ).apply(pd.Series).apply(pd.to_numeric, errors='coerce')
-    print()
-    print('hyper', hyperparameters.columns)
+    print('hyper-parameters', hyperparameters.columns)
 
     # Combine all extracted information
+    df = pd.concat(dict(method=method, finetune=finetune), axis=1)
+    print('method run counts:', df.groupby(['method']).method.count())
 
     # combine with metrics
-    df = pd.concat(dict(dataset=dataset, method=method, finetune=finetune), axis=1)
+    df['dataset'] = args.project_name
     df = df.join(hyperparameters)
     df = df.join(metrics)
 
@@ -140,7 +140,7 @@ def main():
 
     # combine with previous data
     df = pd.concat([df, fedsgd_runs])
-    df.to_csv(f'{args.project_name}.csv')
+    df.to_csv(f'decay--{args.project_name}.csv')
 
 
 if __name__ == "__main__":
