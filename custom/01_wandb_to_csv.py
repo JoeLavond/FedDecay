@@ -119,7 +119,7 @@ def main():
 
     # Combine all extracted information
     df = pd.concat(dict(method=method, finetune=finetune), axis=1)
-    print('method run counts:', df.groupby(['method']).method.count())
+    print('method run counts:', df.groupby(['method', 'finetune']).method.count())
 
     # combine with metrics
     df['dataset'] = args.project_name
