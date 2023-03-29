@@ -109,7 +109,7 @@ def main():
         .str.removesuffix('_finetune')\
         .str.split('--').apply(
             lambda x: {
-                re.sub('[0-9.]+_*', '', obj):re.sub('[a-z_]*', '', obj)
+                re.sub('[0-9.]*', '', obj):re.sub('[A-Za-z_]*', '', obj)
                 for i, obj in enumerate(x)
                 if re.search('[0-9]', obj)
                    and i > 0
@@ -119,12 +119,15 @@ def main():
 
     # Combine all extracted information
     df = pd.concat(dict(method=method, finetune=finetune), axis=1)
-    print('method run counts:', df.groupby(['method', 'finetune']).method.count())
+    print('method run counts:')
+    print(df.groupby(['method', 'finetune']).method.count())
 
     # combine with metrics
     df['dataset'] = args.project_name
     df = df.join(hyperparameters)
     df = df.join(metrics)
+    print('example runs:')
+    print(df.groupby(['method', 'finetune'])[hyperparameters.columns].first())
 
 
     # All Fed runs can be thought of as special cases of decay
