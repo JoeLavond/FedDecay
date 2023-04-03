@@ -1,0 +1,7 @@
+"",method,finetune,dataset,alpha,n_epochs,lr,beta,regular_weight,K,Results/test_acc,Results/test_acc_bottom_decile,Results/test_acc_std,Results/val_acc,Results_unseen/test_acc,Results_unseen/test_acc_bottom_decile,Results_unseen/test_acc_std,Results_weighted/test_acc,Results_weighted_unseen/test_acc
+1530,exact,0,cifar--alpha0.1,0.1,6,0.10,1.0,NaN,NaN,0.594851,0.423423,0.146593,0.570317,0.641625,0.515406,0.117322,0.564013,0.615199
+1040,fedavg,0,cifar--alpha0.1,0.1,6,0.10,NaN,NaN,NaN,0.594851,0.423423,0.146593,0.570317,0.641625,0.515406,0.117322,0.564013,0.615199
+989,exact,0,cifar--alpha0.5,0.5,6,0.05,0.2,NaN,NaN,0.712724,0.615385,0.069776,0.714404,0.711504,0.608696,0.072264,0.711944,0.720452
+523,fedavg,0,cifar--alpha0.5,0.5,6,0.05,NaN,NaN,NaN,0.703486,0.600000,0.071834,0.699693,0.694635,0.619718,0.052156,0.703005,0.700411
+508,exact,0,cifar--alpha5.0,5.0,1,0.05,0.0,NaN,NaN,0.744859,0.686047,0.044244,0.745662,0.740950,0.696629,0.034485,0.744619,0.741606
+318,fedavg,0,cifar--alpha5.0,5.0,1,0.05,NaN,NaN,NaN,0.744859,0.686047,0.044244,0.745662,0.740950,0.696629,0.034485,0.744619,0.741606
