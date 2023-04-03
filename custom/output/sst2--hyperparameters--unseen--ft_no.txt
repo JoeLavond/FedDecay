@@ -1,7 +1,7 @@
 method & finetune & s & n epochs & lr & regular weight & beta & val acc & batch size & K \\
-ditto & 1 & NaN & 3 & 0.05 & 0.8 & NaN & 0.723308 & 16.0 & NaN \\
-exact & 1 & NaN & 3 & 0.05 & NaN & 0.6 & 0.842564 & 16.0 & NaN \\
-fedavg & 1 & NaN & 3 & 0.05 & NaN & NaN & 0.834747 & 16.0 & NaN \\
-fedbn & 1 & NaN & 3 & 0.10 & NaN & NaN & 0.826240 & 64.0 & NaN \\
-fedem & 1 & NaN & 3 & 0.05 & NaN & NaN & 0.843569 & 16.0 & NaN \\
-pfedme & 1 & NaN & 3 & 0.05 & 0.8 & NaN & 0.799065 & 64.0 & 3.0 \\
+ditto & 0 & NaN & 3 & 0.05 & 0.05 & NaN & 0.670620 & 32.0 & NaN \\
+exact & 0 & NaN & 3 & 0.10 & NaN & 0.8 & 0.830993 & 16.0 & NaN \\
+fedavg & 0 & NaN & 3 & 0.05 & NaN & NaN & 0.823137 & 16.0 & NaN \\
+fedbn & 0 & NaN & 3 & 0.10 & NaN & NaN & 0.776281 & 64.0 & NaN \\
+fedem & 0 & NaN & 3 & 0.10 & NaN & NaN & 0.839241 & 32.0 & NaN \\
+pfedme & 0 & NaN & 3 & 0.05 & 0.90 & NaN & 0.768078 & 32.0 & 3.0 \\
