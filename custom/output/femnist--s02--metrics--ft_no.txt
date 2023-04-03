@@ -1,6 +1,0 @@
-method & finetune & test acc & test acc bottom decile & test acc std & unseen test acc & unseen test acc bottom decile & unseen test acc std & weighted test acc & weighted unseen test acc \\
-ditto & 0 & 0.8955 & 0.8158 & 0.0604 & 0.0134 & 0.0000 & 0.0237 & 0.9047 & 0.0128 \\
-exact & 0 & 0.8933 & 0.8136 & 0.0809 & 0.9138 & 0.8519 & 0.0504 & 0.9051 & 0.9198 \\
-fedavg & 0 & 0.8735 & 0.7857 & 0.0852 & 0.8974 & 0.8333 & 0.0515 & 0.8859 & 0.9043 \\
-fedbn & 0 & 0.9172 & 0.8421 & 0.0565 & 0.0028 & 0.0000 & 0.0067 & 0.9246 & 0.0027 \\
-fedem & 0 & 0.8950 & 0.8085 & 0.0820 & 0.9155 & 0.8491 & 0.0479 & 0.9069 & 0.9207 \\
