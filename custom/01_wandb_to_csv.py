@@ -48,7 +48,10 @@ def main():
     # Keep test and validation metric
 
     # get columns from summary dict
+    # keep communication costs
     metrics = runs_df['summary'].apply(pd.Series)
+    sys = metrics[[name for name in metrics.columns if re.search('^sys_avg', name)]]
+
 
     # keep validation metric
     validation_metric = 'Results_avg/val_acc'
@@ -126,6 +129,7 @@ def main():
     df['dataset'] = args.project_name
     df = df.join(hyperparameters)
     df = df.join(metrics)
+    df = df.join(sys)
     print('example runs:')
     print(df.groupby(['method', 'finetune'])[hyperparameters.columns].first())
 

@@ -1,0 +1,7 @@
+method & finetune & n epochs & lr & beta & regular weight & K & val acc \\
+ditto & 1 & 1 & 0.01 & NaN & 0.05 & NaN & 0.412543 \\
+exact & 1 & 3 & 0.10 & 0.2 & NaN & NaN & 0.566214 \\
+fedavg & 1 & 3 & 0.10 & NaN & NaN & NaN & 0.547393 \\
+fedbn & 1 & 3 & 0.01 & NaN & NaN & NaN & 0.349454 \\
+fedem & 1 & 3 & 0.05 & NaN & NaN & NaN & 0.434616 \\
+pfedme & 1 & 3 & 0.50 & NaN & 0.10 & 3.0 & 0.548695 \\

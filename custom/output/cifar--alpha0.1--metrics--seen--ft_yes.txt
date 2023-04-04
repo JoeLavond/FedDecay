@@ -1,0 +1,7 @@
+method & finetune & test acc & test acc bottom decile & test acc std \\
+ditto & 1 & 0.4109 & 0.1781 & 0.2032 \\
+exact & 1 & 0.5713 & 0.3795 & 0.1544 \\
+fedavg & 1 & 0.5719 & 0.3684 & 0.1740 \\
+fedbn & 1 & 0.3829 & 0.0698 & 0.2158 \\
+fedem & 1 & 0.4637 & 0.2105 & 0.2085 \\
+pfedme & 1 & 0.5852 & 0.4375 & 0.1163 \\
