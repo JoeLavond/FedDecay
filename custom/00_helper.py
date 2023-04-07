@@ -144,8 +144,8 @@ def runs_to_latex(
             )
 
             # remove leading space after newlines
-            # replace white space between words with table column skip
             string_temp_tuning = re.sub('\n[\s]+', '\n', string_temp_tuning)
+            # replace white space between words with table column skip
             string_temp_tuning = re.sub('[ \t]+', ' & ', string_temp_tuning)
 
             # add latex newline to end of each line

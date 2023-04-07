@@ -1,0 +1,18 @@
+dataset & method & global convergence round mean & global convergence time minutes mean & total bytes mean & total flops mean \\
+femnist--s02 & ditto & 280.00 & 55.94 & 1.62 & M & 212.69 & G \\
+pubmed & ditto & 80.00 & 0.62 & 2.31 & M & 59.09 & G \\
+sst2 & ditto & 10.00 & 8.88 & 0.37 & M & 867.49 & G \\
+femnist--s02 & exact & 313.33 & 66.63 & 1.51 & M & 454.28 & G \\
+pubmed & exact & 105.00 & 0.59 & 3.0 & M & 26.53 & G \\
+sst2 & exact & 60.00 & 30.16 & 0.88 & M & 828.91 & G \\
+femnist--s02 & fedavg & 336.67 & 46.10 & 1.79 & M & 550.33 & G \\
+pubmed & fedavg & 113.33 & 0.40 & 3.23 & M & 29.25 & G \\
+sst2 & fedavg & 68.33 & 23.89 & 1.0 & M & 922.61 & G \\
+femnist--s02 & fedbn & 450.00 & 20.97 & 1.78 & M & 270.18 & G \\
+pubmed & fedbn & 53.33 & 0.31 & 1.15 & M & 34.15 & G \\
+sst2 & fedbn & 85.00 & 15.64 & 1.24 & M & 1110.0 & G \\
+femnist--s02 & fedem & 303.33 & 175.45 & 4.13 & M & 6896.67 & G \\
+pubmed & fedem & 98.33 & 1.78 & 8.32 & M & 295.4 & G \\
+sst2 & fedem & 48.33 & 70.71 & 2.83 & M & 13043.33 & G \\
+pubmed & pfedme & 106.67 & 1.07 & 3.05 & M & 100.23 & G \\
+sst2 & pfedme & 151.67 & 131.43 & 2.17 & M & 5526.67 & G \\
