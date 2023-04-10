@@ -123,6 +123,11 @@ def runs_to_latex(
         if name not in metrics
            and name != 'dataset'
     ]
+    non_metrics = [
+        'method',
+        'n_epochs', 'batch_size', 'lr',
+        'regular_weight', 'K', 'beta'
+    ]
 
     # iterate each dataset analyzed
     for dataset in filtered_df.dataset.unique():
@@ -131,7 +136,8 @@ def runs_to_latex(
         ## Return table of best hyper-parameters for each run
         temp_df = filtered_df.loc[filtered_df.dataset == dataset]
         temp_tuning = temp_df[non_metrics]
-        temp_tuning = temp_tuning.sort_values(by=id_columns)
+        #temp_tuning = temp_tuning.sort_values(by=id_columns)
+        temp_tuning = temp_tuning.sort_values(by='method')
         temp_tuning.columns = [
             re.sub('/', '_', re.sub('Results[_/]*', '', name)) for name in temp_tuning.columns
         ]
