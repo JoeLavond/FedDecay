@@ -12,10 +12,10 @@ python federatedscope/main.py \
     --cfg custom/cifar--alpha0.1/base_finetune.yaml \
     outdir 'custom/cifar--alpha0.1/wandb' \
     wandb.use True \
-    wandb.name_project 'exact_decay' \
+    wandb.name_project 'decay' \
     wandb.name_user 'joelavond' \
     expname cifar--alpha0.1--n_epochs${local_update_steps}--lr${lr}--beta${beta}--exact \
-    federate.method 'exact_decay' \
+    federate.method 'decay' \
     federate.local_update_steps ${local_update_steps} \
     optimizer.lr ${lr} \
     trainer.beta ${beta}

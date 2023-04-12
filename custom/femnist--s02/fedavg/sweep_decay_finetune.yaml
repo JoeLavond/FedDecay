@@ -1,4 +1,4 @@
-program: custom/femnist--s02/fedavg/helper_sweep_exact_decay_finetune.sh
+program: custom/femnist--s02/fedavg/helper_sweep_decay_finetune.sh
 project: decay--femnist--s02
 name: femnist--s02--fedavg--finetune
 

@@ -1,6 +1,6 @@
-program: custom/pubmed/decay/helper_sweep_exact_decay_finetune.sh
+program: custom/pubmed/decay/helper_sweep_decay_finetune.sh
 project: decay--pubmed
-name: pubmed--exact_decay--finetune
+name: pubmed--decay--finetune
 
 method: grid
 metric:

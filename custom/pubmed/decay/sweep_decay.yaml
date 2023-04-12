@@ -1,6 +1,6 @@
-program: custom/pubmed/decay/helper_sweep_exact_decay.sh
+program: custom/pubmed/decay/helper_sweep_decay.sh
 project: decay--pubmed
-name: pubmed--exact_decay
+name: pubmed--decay
 
 method: grid
 metric:

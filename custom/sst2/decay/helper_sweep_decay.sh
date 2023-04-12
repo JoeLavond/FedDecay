@@ -14,7 +14,7 @@ python federatedscope/main.py \
     wandb.use True \
     wandb.name_user 'joelavond' \
     expname sst2--n_epochs${local_update_steps}--batch_size${batch_size}--lr${lr}--beta${beta}--exact \
-    federate.method 'exact_decay' \
+    federate.method 'decay' \
     federate.local_update_steps ${local_update_steps} \
     data.batch_size ${batch_size} \
     optimizer.lr ${lr} \

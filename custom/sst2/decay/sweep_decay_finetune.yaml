@@ -1,6 +1,6 @@
-program: custom/sst2/decay/helper_sweep_exact_decay_finetune.sh
+program: custom/sst2/decay/helper_sweep_decay_finetune.sh
 project: decay
-name: sst2--exact_decay--finetune
+name: sst2--decay--finetune
 
 method: grid
 metric:

@@ -1,4 +1,4 @@
-program: custom/femnist--s02/decay/helper_sweep_exact_decay.sh
+program: custom/femnist--s02/decay/helper_sweep_decay.sh
 project: decay--femnist--s02
 
 method: grid

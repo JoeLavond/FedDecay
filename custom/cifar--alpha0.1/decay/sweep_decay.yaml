@@ -1,6 +1,6 @@
-program: custom/cifar--alpha0.1/decay/helper_sweep_exact_decay.sh
+program: custom/cifar--alpha0.1/decay/helper_sweep_decay.sh
 project: decay
-name: cifar--alpha0.1--exact_decay
+name: cifar--alpha0.1--decay
 
 method: grid
 metric:
