@@ -117,13 +117,9 @@ def get_trainer(model=None,
     # -------------------------------
     # custom
 
-    elif config.federate.method.lower() == "approx_decay":
-        from federatedscope.core.trainers.trainer_approx_decay import wrap_approx_decay
-        trainer = wrap_approx_decay(trainer)
-
-    elif config.federate.method.lower() == "exact_decay":
-        from federatedscope.core.trainers.trainer_exact_decay import wrap_exact_decay
-        trainer = wrap_exact_decay(trainer)
+    elif config.federate.method.lower() == "decay":
+        from federatedscope.core.trainers.trainer_decay import wrap_decay
+        trainer = wrap_decay(trainer)
 
     # -------------------------------
 

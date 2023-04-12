@@ -6,25 +6,22 @@ import torch
 from federatedscope.core.auxiliaries.optimizer_builder import get_optimizer
 from federatedscope.core.trainers.trainer import GeneralTorchTrainer
 from federatedscope.core.optimizer import wrap_regularized_optimizer
-#from federatedscope.core.trainers.utils import calculate_batch_epoch_num
+# from federatedscope.core.trainers.utils import calculate_batch_epoch_num
 from typing import Type
 
 # ------
 import types
+
 # ------
 
 logger = logging.getLogger(__name__)
 
 
-def wrap_exact_decay(
+def wrap_decay(
         base_trainer: Type[GeneralTorchTrainer]) -> Type[GeneralTorchTrainer]:
-
     # ---------------- attribute-level plug-in -----------------------
     init_decay_ctx(base_trainer)
-
-    #assert base_trainer.cfg.federate.batch_or_epoch == 'epoch'
-    #batch_or_epoch = base_trainer.cfg.federate.batch_or_epoch
-    batch_or_epoch = base_trainer.cfg.trainer.batch_or_epoch
+    model_on_batch_or_epoch = base_trainer.cfg.trainer.model_on_batch_or_epoch
 
     # ------
     # modify finetune
@@ -42,33 +39,41 @@ def wrap_exact_decay(
 
     # for exact decay at the end of every local update:
     # save model and decay
-    if batch_or_epoch == 'epoch':
+    if model_on_batch_or_epoch == 'epoch':
 
         base_trainer.register_hook_in_train(
-            new_hook=_hook_on_start_save_model,
+            new_hook=_hook_save_model,
             trigger='on_epoch_start',
             insert_pos=-1
         )
 
         base_trainer.register_hook_in_train(
-            new_hook=_hook_on_end_decay_model,
+            new_hook=_hook_decay_model,
             trigger='on_epoch_end',
             insert_pos=-1
         )
 
-    elif batch_or_epoch == 'batch':
+
+    elif model_on_batch_or_epoch == 'batch':
 
         base_trainer.register_hook_in_train(
-            new_hook=_hook_on_start_save_model,
+            new_hook=_hook_save_model,
             trigger='on_batch_start',
             insert_pos=-1
         )
 
         base_trainer.register_hook_in_train(
-            new_hook=_hook_on_end_decay_model,
+            new_hook=_hook_decay_model,
             trigger='on_batch_end',
             insert_pos=-1
         )
+
+    # when to update decay coefficient
+    base_trainer.register_hook_in_train(
+        new_hook=_hook_update_step,
+        trigger='on_epoch_end',
+        insert_pos=-1
+    )
 
     # cleanup
     base_trainer.register_hook_in_train(
@@ -81,39 +86,39 @@ def wrap_exact_decay(
 
 
 def init_decay_ctx(base_trainer):
-
+    # initializations
     ctx = base_trainer.ctx
     cfg = base_trainer.cfg
 
-    ctx.batch_or_epoch = cfg.trainer.batch_or_epoch
+    # decay frequency
+    ctx.model_on_batch_or_epoch = cfg.trainer.model_on_batch_or_epoch
 
-
+    # decay values
     ctx.beta = cfg.trainer.beta
     ctx.finetune_beta = cfg.trainer.finetune_beta
 
 
+# initialize last model for storage
 def _hook_decay_init(ctx):
-
-    # initialize last model for storage
     ctx.last_model = []
     ctx.step_iter = 0
 
 
-def _hook_on_start_save_model(ctx):
-
-    # save current model as ONLY step
+# save current model as ONLY step
+def _hook_save_model(ctx):
     ctx.last_model = copy.deepcopy(ctx.model)
+
+
+def _hook_update_step(ctx):
     ctx.step_iter += 1
 
 
-def _hook_on_end_decay_model(ctx):
-
+def _hook_decay_model(ctx):
     # iterate each parameter for all models simulataneously
     for current_parameter, last_parameter in zip(
-        ctx.model.parameters(),  # target model for updates
-        ctx.last_model.parameters()  # last model values
+            ctx.model.parameters(),  # target model for updates
+            ctx.last_model.parameters()  # last model values
     ):
-
         # compute parameter change between each successive model step
         current_weights = current_parameter.detach().clone()
         last_weights = last_parameter.detach().clone()
@@ -121,8 +126,7 @@ def _hook_on_end_decay_model(ctx):
 
         # scale differences with exponential decay
         scaled_model_difference = (
-            ctx.beta ** (ctx.step_iter - 1)
-            * model_difference
+                (ctx.beta ** ctx.step_iter) * model_difference
         )
 
         # combine decayed steps and add to the initialization
@@ -133,7 +137,6 @@ def _hook_on_end_decay_model(ctx):
 
 
 def finetune(self, target_data_split_name="train", hooks_set=None):
-
     # freeze the parameters during the fine-tune stage
     require_grad_changed_paras = set()
     if self.cfg.trainer.finetune.freeze_param != "":
@@ -187,5 +190,3 @@ def finetune(self, target_data_split_name="train", hooks_set=None):
     self.ctx["num_train_epoch"] = original_epoch_num
     self.ctx["num_train_batch"] = original_batch_num
     self.ctx["num_train_batch_last_epoch"] = original_batch_num_last
-
-

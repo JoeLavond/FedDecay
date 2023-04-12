@@ -7,11 +7,13 @@ def extend_training_cfg(cfg):
     # Trainer related options
     # ------------------------------------------------------------------------ #
     cfg.trainer = CN()
-
     cfg.trainer.type = 'general'
 
     # ------
-    cfg.trainer.batch_or_epoch = 'epoch'
+    # when should model be decayed?
+    # note that decay coefficients update every epoch
+    cfg.trainer.model_on_batch_or_epoch = 'epoch'
+    # default decay
     cfg.trainer.beta = 1.0
     cfg.trainer.finetune_beta = 1.0
     # ------
