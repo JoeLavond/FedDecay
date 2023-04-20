@@ -1,7 +1,8 @@
 method & finetune & unseen test acc & unseen test acc bottom decile & unseen test acc std \\
 ditto & 1 & 0.5672 & 0.4444 & 0.0921 \\
-exact & 1 & 0.9152 & 0.8421 & 0.0485 \\
-fedavg & 1 & 0.9055 & 0.8491 & 0.0530 \\
 fedbn & 1 & 0.9059 & 0.8302 & 0.0544 \\
 fedem & 1 & 0.9175 & 0.8333 & 0.0526 \\
 pfedme & 1 & 0.9036 & 0.8438 & 0.0751 \\
+fomaml & 1 & 0.8989 & 0.8113 & 0.0604 \\
+fedavg & 1 & 0.9055 & 0.8491 & 0.0530 \\
+exact & 1 & 0.9152 & 0.8421 & 0.0485 \\

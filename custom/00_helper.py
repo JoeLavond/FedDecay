@@ -78,15 +78,16 @@ def process_run_metrics(filtered_df, method='exact'):
     top_filtered_metrics = long_filtered_ranks.loc[long_filtered_ranks.value <= 3].copy()  # top 3 runs
 
     # compute rank summaries to understand what runs are top overall
-    top_filtered_metrics['rank_one_ind'] = (top_filtered_metrics.value == 1)
-    top_filtered_metrics['rank_two_ind'] = (top_filtered_metrics.value == 2)
-    top_filtered_metrics['rank_three_ind'] = (top_filtered_metrics.value == 3)
-    top_filtered_metrics.replace(False, pd.NA, inplace=True)
+    top_filtered_metrics['rank_one_ind'] = (top_filtered_metrics.value == 1).astype(int)
+    top_filtered_metrics['rank_two_ind'] = (top_filtered_metrics.value == 2).astype(int)
+    top_filtered_metrics['rank_three_ind'] = (top_filtered_metrics.value == 3).astype(int)
+    top_filtered_metrics['value'] = top_filtered_metrics['value'].astype(bool).astype(int)
+    #top_filtered_metrics[['rank_one_ind', 'rank_two_ind', 'rank_three_ind']].replace(0, pd.NA, inplace=True)
 
     # summarized metric ranks for run type
     rank_summary_columns = ['rank_one_ind', 'rank_two_ind', 'rank_three_ind', 'value']
     id_columns = ['method', 'finetune']
-    run_summary = top_filtered_metrics.groupby(id_columns)[rank_summary_columns].count()
+    run_summary = top_filtered_metrics.groupby(id_columns)[rank_summary_columns].sum()
 
     # summarize metric ranks for metric choice
     metric_summary = top_filtered_metrics.loc[top_filtered_metrics.method == method]

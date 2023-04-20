@@ -99,7 +99,7 @@ def main():
     metrics = metrics.reindex(sorted(metrics.columns), axis=1)
 
     # identify method used
-    methods = ['exact', 'fedavg', 'pfedme', 'fedbn', 'ditto', 'fedem']
+    methods = ['exact', 'fedavg', 'pfedme', 'fedbn', 'ditto', 'fedem', 'fomaml']
     method = runs_df.name.apply(
         lambda x: [method for method in methods if re.search(method, x)].pop(0)
     )
