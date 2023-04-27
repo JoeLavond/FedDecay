@@ -1,5 +1,5 @@
 program: custom/femnist--s02/decay/helper_sweep_decay_finetune.sh
-project: decay--extras
+project: decay--femnist--s02
 
 method: grid
 metric:

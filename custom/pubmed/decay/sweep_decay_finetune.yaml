@@ -1,5 +1,5 @@
 program: custom/pubmed/decay/helper_sweep_decay_finetune.sh
-project: decay--pubmed2
+project: decay--pubmed
 
 method: grid
 metric:

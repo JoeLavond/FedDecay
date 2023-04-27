@@ -1,5 +1,5 @@
 program: custom/sst2/decay/helper_sweep_decay_finetune.sh
-project: decay--extras
+project: decay--sst2
 
 method: grid
 metric:

@@ -14,6 +14,7 @@ python federatedscope/main.py \
     wandb.use True \
     wandb.name_user 'joelavond' \
     federate.method 'FedEM' \
+    federate.sample_client_num 3 \
     federate.unseen_clients_rate 0.4 \
     model.model_num_per_trainer 3 \
     expname pubmed--fedem--n_epochs${local_update_steps}--lr${lr} \
