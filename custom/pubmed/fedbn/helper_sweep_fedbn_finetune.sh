@@ -13,6 +13,7 @@ python federatedscope/main.py \
     outdir 'custom/pubmed/wandb' \
     wandb.use True \
     wandb.name_user 'joelavond' \
+    federate.unseen_clients_rate 0.4 \
     personalization.local_param "['bn', 'norms']"
     expname pubmed--n_epochs${local_update_steps}--lr${lr} \
     federate.local_update_steps ${local_update_steps} \
