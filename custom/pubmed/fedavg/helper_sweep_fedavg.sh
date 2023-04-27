@@ -13,6 +13,7 @@ python federatedscope/main.py \
     outdir 'custom/pubmed/wandb' \
     wandb.use True \
     wandb.name_user 'joelavond' \
-    expname pubmed--n_epochs${local_update_steps}--lr${lr} \
+    seed 0
+    expname pubmed--fedavg--n_epochs${local_update_steps}--lr${lr}--seed0 \
     federate.local_update_steps ${local_update_steps} \
     optimizer.lr ${lr}

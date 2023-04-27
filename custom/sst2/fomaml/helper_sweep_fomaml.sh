@@ -14,7 +14,9 @@ python federatedscope/main.py \
     wandb.use True \
     wandb.name_user 'joelavond' \
     seed 2
-    expname sst2--fedavg--n_epochs${local_update_steps}--batch_size${batch_size}--lr${lr}--seed2 \
+    expname sst2--fomaml--n_epochs${local_update_steps}--batch_size${batch_size}--lr${lr}--seed2 \
+    federate.method 'fomaml' \
     federate.local_update_steps ${local_update_steps} \
     data.batch_size ${batch_size} \
     optimizer.lr ${lr}
+
