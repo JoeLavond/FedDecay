@@ -130,23 +130,30 @@ def main():
     df = df.join(hyperparameters)
     df = df.join(metrics)
     df = df.join(sys)
-    print('example runs:')
-    print(df.groupby(['method', 'finetune'])[hyperparameters.columns].first())
+    #print('example runs:')
+    #print(df.groupby(['method', 'finetune'])[hyperparameters.columns].first())
 
 
     # All Fed runs can be thought of as special cases of decay
     # Create copy of rows to treat as additional decay runs
 
     # Copy fedsgd runs to exact decay
-    fedsgd_runs = df.loc[(df.method == 'fedavg')].copy()
+    fedsgd_runs = df.loc[
+        (df.method == 'fedavg')
+        & (df.n_epochs == 1)
+        ].copy()
     fedsgd_runs.method = 'exact'
+    fedsgd_runs.beta = 0.0
 
-    # Identify SGD runs as beta 0, otherwise beta 1
-    fedsgd_runs.beta = 1.0
-    fedsgd_runs.loc[(df.n_epochs == 1), 'beta'] = 0.0
+    fedavg_runs = df.loc[
+        (df.method == 'fedavg')
+        & (df.n_epochs > 1)
+        ].copy()
+    fedavg_runs.method = 'exact'
+    fedavg_runs.beta = 1.0
 
     # combine with previous data
-    df = pd.concat([df, fedsgd_runs])
+    df = pd.concat([df, fedsgd_runs, fedavg_runs])
     df.to_csv(f'decay--{args.project_name}.csv')
 
 

@@ -42,6 +42,10 @@ def process_run_metrics(filtered_df, method='exact'):
         for name in descending_metrics
         if re.search('std', name)
     ]
+    print()
+    print('descending metrics:', descending_metrics)
+    print()
+    print('ascending metrics:', ascending_metrics)
     metrics = descending_metrics + ascending_metrics
 
     # all non-metrics columns are used to identify the experimental run
@@ -49,6 +53,8 @@ def process_run_metrics(filtered_df, method='exact'):
         name for name in filtered_df.columns
         if name not in metrics
     ]]
+    print()
+    print('id_columns', filtered_runs.columns)
 
     # rank the metrics
     ranked_descending = filtered_df.groupby(['dataset'])[descending_metrics].rank(
