@@ -9,14 +9,13 @@ do
 done
 
 python federatedscope/main.py \
-    --cfg custom/pubmed/base.yaml \
-    outdir 'custom/pubmed/wandb' \
+    --cfg custom/femnist--s02/base.yaml \
+    outdir 'custom/femnist--s02/wandb' \
     wandb.use True \
     wandb.name_user 'joelavond' \
-    federate.method 'Ditto' \
-    expname pubmed--n_epochs${local_update_steps}--lr${lr}--regular_weight${regular_weight} \
+    seed 0
+    expname femnist--s02--fomaml--n_epochs${local_update_steps}--lr${lr}--seed0 \
+    federate.method 'fomaml' \
     federate.local_update_steps ${local_update_steps} \
-    optimizer.lr ${lr} \
-    personalization.regular_weight ${regular_weight}
-
+    optimizer.lr ${lr}
 

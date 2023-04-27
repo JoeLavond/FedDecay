@@ -13,7 +13,8 @@ python federatedscope/main.py \
     outdir 'custom/femnist--s02/wandb' \
     wandb.use True \
     wandb.name_user 'joelavond' \
-    expname femnist--s02--fedavg--n_epochs${local_update_steps}--lr${lr} \
+    seed 2
+    expname femnist--s02--fedavg--n_epochs${local_update_steps}--lr${lr}--seed2 \
     federate.local_update_steps ${local_update_steps} \
     optimizer.lr ${lr}
 

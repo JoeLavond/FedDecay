@@ -9,16 +9,13 @@ do
 done
 
 python federatedscope/main.py \
-    --cfg custom/pubmed/base.yaml \
+    --cfg custom/pubmed/base_finetune.yaml \
     outdir 'custom/pubmed/wandb' \
     wandb.use True \
     wandb.name_user 'joelavond' \
-    federate.method 'pFedMe' \
-    personalization.lr '-1.0' \
-    expname pubmed--n_epochs${local_update_steps}--lr${lr}--regular_weight${regular_weight}--K${K} \
+    federate.unseen_clients_rate 0.4 \
+    expname pubmed--fomaml--n_epochs${local_update_steps}--lr${lr} \
+    federate.method 'fomaml' \
     federate.local_update_steps ${local_update_steps} \
-    optimizer.lr ${lr} \
-    personalization.regular_weight ${regular_weight} \
-    personalization.K ${K}
-
+    optimizer.lr ${lr}
 
