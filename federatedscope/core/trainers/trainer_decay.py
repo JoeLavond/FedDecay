@@ -96,6 +96,7 @@ def init_decay_ctx(base_trainer):
     # decay values
     ctx.beta = cfg.trainer.beta
     ctx.finetune_beta = cfg.trainer.finetune_beta
+    ctx.decay_scheme = cfg.trainer.decay_scheme
 
 
 # initialize last model for storage
@@ -125,9 +126,17 @@ def _hook_decay_model(ctx):
         model_difference = current_weights - last_weights
 
         # scale differences with exponential decay
-        scaled_model_difference = (
-                (ctx.beta ** ctx.step_iter) * model_difference
-        )
+        if ctx.decay_scheme == 'exponential':
+            scaling = ctx.beta ** ctx.step_iter  # factor decay each step
+            scaled_model_difference = scaling * model_difference
+        elif ctx.decay_scheme == 'linear':
+            scaling = 1 - (ctx.beta * ctx.step_iter)  # linear decay each step
+            scaling = max([scaling, 0])  # force scaling to be non-negative
+            scaled_model_difference = scaling * model_difference
+        else:
+            print(f'decay scheme {ctx.decay_scheme} not implemented')
+            scaling = 1
+            scaled_model_difference = scaling * model_difference
 
         # combine decayed steps and add to the initialization
         with torch.no_grad():

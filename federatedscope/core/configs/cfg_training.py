@@ -16,6 +16,7 @@ def extend_training_cfg(cfg):
     # default decay
     cfg.trainer.beta = 1.0
     cfg.trainer.finetune_beta = 1.0
+    cfg.trainer.decay_scheme = 'exponential'
     # ------
 
     cfg.trainer.finetune = CN()
