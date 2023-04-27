@@ -14,7 +14,7 @@ python federatedscope/main.py \
     wandb.use True \
     wandb.name_user 'joelavond' \
     federate.unseen_clients_rate 0.4 \
-    expname pubmed--n_epochs${local_update_steps}--lr${lr} \
+    expname pubmed--fedavg--n_epochs${local_update_steps}--lr${lr} \
     federate.local_update_steps ${local_update_steps} \
     optimizer.lr ${lr}
 

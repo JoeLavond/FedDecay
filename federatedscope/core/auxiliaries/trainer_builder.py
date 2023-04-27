@@ -121,6 +121,10 @@ def get_trainer(model=None,
         from federatedscope.core.trainers.trainer_decay import wrap_decay
         trainer = wrap_decay(trainer)
 
+    elif config.federate.method.lower() == "FOMAML":
+        from federatedscope.core.trainers.trainer_FOMAML import wrap_FOMAML
+        trainer = wrap_FOMAML(trainer)
+
     # -------------------------------
 
     # attacker plug-in

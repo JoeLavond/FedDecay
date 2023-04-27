@@ -16,7 +16,7 @@ python federatedscope/main.py \
     federate.method 'FedEM' \
     federate.unseen_clients_rate 0.4 \
     model.model_num_per_trainer 3 \
-    expname pubmed--n_epochs${local_update_steps}--lr${lr} \
+    expname pubmed--fedem--n_epochs${local_update_steps}--lr${lr} \
     federate.local_update_steps ${local_update_steps} \
     optimizer.lr ${lr}
 
