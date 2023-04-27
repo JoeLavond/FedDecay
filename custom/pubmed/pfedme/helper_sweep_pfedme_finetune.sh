@@ -15,6 +15,7 @@ python federatedscope/main.py \
     wandb.name_user 'joelavond' \
     federate.method 'pFedMe' \
     personalization.lr '-1.0' \
+    federate.unseen_clients_rate 0.4 \
     expname pubmed--n_epochs${local_update_steps}--lr${lr}--regular_weight${regular_weight}--K${K} \
     federate.local_update_steps ${local_update_steps} \
     optimizer.lr ${lr} \
