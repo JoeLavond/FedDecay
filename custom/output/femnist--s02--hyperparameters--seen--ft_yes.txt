@@ -6,3 +6,4 @@ pfedme & 3 & NaN & 0.50 & 0.05 & 3.0 & NaN \\
 fomaml & 3 & NaN & 0.50 & NaN & NaN & NaN \\
 fedavg & 1 & NaN & 0.10 & NaN & NaN & NaN \\
 exact & 3 & NaN & 0.05 & NaN & NaN & 0.2 \\
+linear & 3 & NaN & 0.10 & NaN & NaN & 0.6 \\

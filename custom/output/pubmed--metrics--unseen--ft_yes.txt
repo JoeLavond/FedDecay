@@ -6,3 +6,4 @@ pfedme & 1 & 0.7932 & NaN & NaN \\
 fomaml & 1 & 0.7950 & NaN & NaN \\
 fedavg & 1 & 0.7914 & NaN & NaN \\
 exact & 1 & 0.8039 & NaN & NaN \\
+linear & 1 & 0.7772 & NaN & NaN \\
