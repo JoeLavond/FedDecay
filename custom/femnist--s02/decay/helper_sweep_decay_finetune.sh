@@ -10,20 +10,12 @@ done
 
 python federatedscope/main.py \
     --cfg custom/femnist--s02/base_finetune.yaml \
-    #
-    # wandb
     outdir 'custom/femnist--s02/wandb' \
     wandb.use True \
     wandb.name_user 'joelavond' \
-    #
-    # expname
     expname femnist--s02--n_epochs${local_update_steps}--lr${lr}--beta${beta}--linear \
-    #
-    # basic tuning
     federate.local_update_steps ${local_update_steps} \
     optimizer.lr ${lr} \
-    #
-    # decay
     federate.method 'decay' \
     trainer.decay_scheme 'linear' \
     trainer.beta ${beta}

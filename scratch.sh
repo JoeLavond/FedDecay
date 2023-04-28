@@ -6,7 +6,7 @@ echo "last execute at $current_date_time";
 echo "";
 
 # control
-screen_count_max=3
+screen_count_max=4
 gpu_number=2
 
 # get number of detached screens
@@ -21,7 +21,7 @@ if [[ $gpu2_count -lt $screen_count_max && $screen_count -lt $condition ]]
 then
     screen -dm bash -c "
         source activate fs;
-        CUDA_VISIBLE_DEVICES=2 wandb agent joelavond/decay--extras/pdlgw13t;
+        CUDA_VISIBLE_DEVICES=2 wandb agent joelavond/decay--pubmed/wdicnf3p;
     ";
 fi
 
@@ -29,7 +29,7 @@ if [[ $gpu3_count -lt $screen_count_max && $screen_count -lt $condition ]]
 then
     screen -dm bash -c "
         source activate fs;
-        CUDA_VISIBLE_DEVICES=3 wandb agent joelavond/decay--extras/m4eccgum;
+        CUDA_VISIBLE_DEVICES=3 wandb agent joelavond/decay--pubmed/wdicnf3p;
     ";
 fi
 
