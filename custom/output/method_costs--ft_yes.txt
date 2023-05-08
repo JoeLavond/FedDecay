@@ -2,8 +2,8 @@ method & dataset & global convergence round mean & global convergence time minut
 ditto & femnist--s02 & 830.0 & 188.57 & 3.9 & M & 2970.0 & G \\
 ditto & sst2 & 45.0 & 137.34 & 0.66 & M & 1650.0 & G \\
 ditto & pubmed & 115.0 & 0.51 & 3.28 & M & 45.7 & G \\
-fedbn & femnist--s02 & 410.0 & 102.01 & 1.62 & M & 269.4 & G \\
-fedbn & sst2 & 60.0 & 10.99 & 0.88 & M & 895.77 & G \\
+fedbn & femnist--s02 & 410.0 & 20.70 & 1.62 & M & 269.4 & G \\
+fedbn & sst2 & 60.0 & 14.15 & 0.88 & M & 895.77 & G \\
 fedbn & pubmed & 115.0 & 0.35 & 2.4 & M & 28.14 & G \\
 fedem & femnist--s02 & 220.0 & 137.72 & 3.0 & M & 6500.0 & G \\
 fedem & sst2 & 60.0 & 176.92 & 2.49 & M & 20060.0 & G \\
