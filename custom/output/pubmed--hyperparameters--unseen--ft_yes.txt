@@ -1,9 +1,0 @@
-method & n epochs & batch size & lr & regular weight & K & beta \\
-ditto & 1 & NaN & 0.005 & 0.1 & NaN & NaN \\
-fedbn & 3 & NaN & 0.005 & NaN & NaN & NaN \\
-fedem & 3 & NaN & 0.500 & NaN & NaN & NaN \\
-pfedme & 3 & NaN & 0.500 & 0.5 & 1.0 & NaN \\
-fomaml & 3 & NaN & 0.500 & NaN & NaN & NaN \\
-fedavg & 1 & NaN & 0.500 & NaN & NaN & NaN \\
-exact & 3 & NaN & 0.500 & NaN & NaN & 0.4 \\
-linear & 3 & NaN & 0.500 & NaN & NaN & 0.4 \\
