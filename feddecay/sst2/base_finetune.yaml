@@ -194,8 +194,3 @@ use_gpu: true
 verbose: 1
 vertical:
   use: false
-#wandb:
-  #name_project: pFL-bench
-  #name_user: daoyuan
-  #online_track: true
-  #use: true

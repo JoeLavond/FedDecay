@@ -1,4 +1,4 @@
-program: custom/pubmed/fedem/helper_sweep_fedem_finetune.sh
+program: feddecay/pubmed/fedem/helper_sweep_fedem_finetune.sh
 project: decay--pubmed2
 
 method: grid

@@ -9,10 +9,9 @@ do
 done
 
 python federatedscope/main.py \
-    --cfg custom/pubmed/base_finetune.yaml \
-    outdir 'custom/pubmed/wandb' \
+    --cfg feddecay/pubmed/base_finetune.yaml \
+    outdir 'feddecay/pubmed/wandb' \
     wandb.use True \
-    wandb.name_user 'joelavond' \
     federate.method 'pFedMe' \
     personalization.lr '-1.0' \
     federate.sample_client_num 3 \

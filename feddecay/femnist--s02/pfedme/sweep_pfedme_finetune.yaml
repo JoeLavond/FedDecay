@@ -1,4 +1,4 @@
-program: custom/femnist--s02/pfedme/helper_sweep_pfedme_finetune.sh
+program: feddecay/femnist--s02/pfedme/helper_sweep_pfedme_finetune.sh
 project: decay--femnist--s02
 
 method: grid
@@ -16,7 +16,7 @@ parameters:
     lr:
         values: [0.05, 0.005, 0.5, 0.01, 0.1] 
     local_update_steps:
-        values: [1, 3, 6]
+        values: [1, 3]
     regular_weight:
         values: [0.05, 0.1, 0.5, 0.8]
     K:

@@ -1,6 +1,5 @@
-program: custom/femnist--s02/fedbn/helper_sweep_fedbn_finetune.sh
+program: feddecay/femnist--s02/fedbn/helper_sweep_fedbn_finetune.sh
 project: decay--femnist--s02
-name: femnist--s02--fedbn--finetune
 
 method: grid
 metric:
@@ -17,7 +16,7 @@ parameters:
     lr:
         values: [0.05, 0.005, 0.5, 0.01, 0.1] 
     local_update_steps:
-        values: [1, 3, 6]
+        values: [1, 3]
 
 early_terminate:
     type: hyperband

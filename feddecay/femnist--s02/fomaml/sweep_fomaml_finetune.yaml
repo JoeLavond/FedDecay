@@ -1,4 +1,4 @@
-program: custom/femnist--s02/fomaml/helper_sweep_fomaml_finetune.sh
+program: feddecay/femnist--s02/fomaml/helper_sweep_fomaml_finetune.sh
 project: decay--extras
 
 method: grid

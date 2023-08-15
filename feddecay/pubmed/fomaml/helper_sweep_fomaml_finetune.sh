@@ -9,10 +9,9 @@ do
 done
 
 python federatedscope/main.py \
-    --cfg custom/pubmed/base_finetune.yaml \
-    outdir 'custom/pubmed/wandb' \
+    --cfg feddecay/pubmed/base_finetune.yaml \
+    outdir 'feddecay/pubmed/wandb' \
     wandb.use True \
-    wandb.name_user 'joelavond' \
     federate.sample_client_num 3 \
     federate.unseen_clients_rate 0.4 \
     expname pubmed--fomaml--n_epochs${local_update_steps}--lr${lr} \

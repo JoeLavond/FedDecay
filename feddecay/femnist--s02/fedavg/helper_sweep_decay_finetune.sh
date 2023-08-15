@@ -9,12 +9,10 @@ do
 done
 
 python federatedscope/main.py \
-    --cfg custom/femnist--s02/base_finetune.yaml \
-    outdir 'custom/femnist--s02/wandb' \
+    --cfg feddecay/femnist--s02/base_finetune.yaml \
+    outdir 'feddecay/femnist--s02/wandb' \
     wandb.use True \
-    wandb.name_user 'joelavond' \
-    seed 2
-    expname femnist--s02--fedavg--n_epochs${local_update_steps}--lr${lr}--seed2 \
+    expname femnist--s02--fedavg--n_epochs${local_update_steps}--lr${lr} \
     federate.local_update_steps ${local_update_steps} \
     optimizer.lr ${lr}
 

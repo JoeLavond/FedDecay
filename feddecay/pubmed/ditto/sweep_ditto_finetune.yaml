@@ -1,4 +1,4 @@
-program: custom/pubmed/ditto/helper_sweep_ditto_finetune.sh
+program: feddecay/pubmed/ditto/helper_sweep_ditto_finetune.sh
 project: decay--pubmed2
 
 method: grid

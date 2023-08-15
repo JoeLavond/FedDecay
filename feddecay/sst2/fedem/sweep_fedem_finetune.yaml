@@ -1,6 +1,5 @@
-program: custom/sst2/fedem/helper_sweep_fedem_finetune.sh
+program: feddecay/sst2/fedem/helper_sweep_fedem_finetune.sh
 project: decay
-name: sst2--fedem--finetune
 
 method: grid
 metric:
@@ -23,5 +22,5 @@ parameters:
 
 early_terminate:
     type: hyperband
-    min_iter: 5
+    min_iter: 3
 

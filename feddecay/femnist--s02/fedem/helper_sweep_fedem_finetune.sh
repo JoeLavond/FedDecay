@@ -9,10 +9,9 @@ do
 done
 
 python federatedscope/main.py \
-    --cfg custom/femnist--s02/base_finetune.yaml \
-    outdir 'custom/femnist--s02/wandb' \
+    --cfg feddecay/femnist--s02/base_finetune.yaml \
+    outdir 'feddecay/femnist--s02/wandb' \
     wandb.use True \
-    wandb.name_user 'joelavond' \
     federate.method 'FedEM' \
     model.model_num_per_trainer 3 \
     expname femnist--s02--fedem--n_epochs${local_update_steps}--lr${lr} \

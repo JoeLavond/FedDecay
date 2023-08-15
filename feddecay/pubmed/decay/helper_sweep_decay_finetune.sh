@@ -9,14 +9,12 @@ do
 done
 
 python federatedscope/main.py \
-    --cfg custom/pubmed/base_finetune.yaml \
-    outdir 'custom/pubmed/wandb' \
+    --cfg feddecay/pubmed/base_finetune.yaml \
+    outdir 'feddecay/pubmed/wandb' \
     wandb.use True \
-    wandb.name_user 'joelavond' \
-    expname pubmed--n_epochs${local_update_steps}--lr${lr}--beta${beta}--linear \
+    expname pubmed--n_epochs${local_update_steps}--lr${lr}--beta${beta} \
     federate.local_update_steps ${local_update_steps} \
     optimizer.lr ${lr} \
     federate.method 'decay' \
-    trainer.decay_scheme 'linear' \
     trainer.beta ${beta}
 
