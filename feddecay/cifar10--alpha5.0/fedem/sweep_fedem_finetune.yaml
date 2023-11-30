@@ -1,0 +1,24 @@
+program: feddecay/femnist--s02/fedem/helper_sweep_fedem_finetune.sh
+project: decay--femnist--s02
+
+method: grid
+metric:
+    goal: maximize
+    name: best_client_summarized_weighted_avg/val_acc
+
+command:
+  - ${env}
+  - bash
+  - ${program}
+  - ${args_no_hyphens}
+
+parameters:
+    lr:
+        values: [0.05, 0.005, 0.5, 0.01, 0.1] 
+    local_update_steps:
+        values: [1, 3]
+
+early_terminate:
+    type: hyperband
+    min_iter: 3
+
