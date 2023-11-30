@@ -1,6 +1,6 @@
-program: feddecay/femnist--s02/ditto/helper_sweep_ditto_finetune.sh
-project: decay--femnist--s02
-name: femnist--s02--ditto--finetune
+program: feddecay/cifar10--alpha5.0/ditto/helper_sweep_ditto_finetune.sh
+project: decay--cifar10--alpha5.0
+name: cifar10--alpha5.0--ditto--finetune
 
 method: grid
 metric:

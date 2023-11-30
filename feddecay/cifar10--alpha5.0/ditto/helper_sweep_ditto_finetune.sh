@@ -9,11 +9,11 @@ do
 done
 
 python federatedscope/main.py \
-    --cfg feddecay/femnist--s02/base_finetune.yaml \
-    outdir 'feddecay/femnist--s02/wandb' \
+    --cfg feddecay/cifar10--alpha5.0/base_finetune.yaml \
+    outdir 'feddecay/cifar10--alpha5.0/wandb' \
     wandb.use True \
     federate.method 'Ditto' \
-    expname femnist--s02--n_epochs${local_update_steps}--lr${lr}--regular_weight${regular_weight} \
+    expname cifar10--alpha5.0--n_epochs${local_update_steps}--lr${lr}--regular_weight${regular_weight} \
     federate.local_update_steps ${local_update_steps} \
     optimizer.lr ${lr} \
     personalization.regular_weight ${regular_weight}

@@ -1,5 +1,5 @@
-program: feddecay/femnist--s02/pfedme/helper_sweep_pfedme_finetune.sh
-project: decay--femnist--s02
+program: feddecay/cifar10--alpha5.0/pfedme/helper_sweep_pfedme_finetune.sh
+project: decay--cifar10--alpha5.0
 
 method: grid
 metric:

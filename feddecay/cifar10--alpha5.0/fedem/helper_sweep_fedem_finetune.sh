@@ -9,12 +9,12 @@ do
 done
 
 python federatedscope/main.py \
-    --cfg feddecay/femnist--s02/base_finetune.yaml \
-    outdir 'feddecay/femnist--s02/wandb' \
+    --cfg feddecay/cifar10--alpha5.0/base_finetune.yaml \
+    outdir 'feddecay/cifar10--alpha5.0/wandb' \
     wandb.use True \
     federate.method 'FedEM' \
     model.model_num_per_trainer 3 \
-    expname femnist--s02--fedem--n_epochs${local_update_steps}--lr${lr} \
+    expname cifar10--alpha5.0--fedem--n_epochs${local_update_steps}--lr${lr} \
     federate.local_update_steps ${local_update_steps} \
     optimizer.lr ${lr}
 
