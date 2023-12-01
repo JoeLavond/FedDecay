@@ -21,7 +21,7 @@ def dirichlet_distribution_noniid_slice(label, client_num, alpha, min_size=10):
         raise ValueError('Only support single-label tasks!')
     num = len(label)
     classes = len(np.unique(label))
-    assert num > client_num * min_size, f'The number of sample should be greater than {client_num *min_size}.'
+    assert num >= client_num * min_size, f'The number of sample {num} should be greater than client_num {client_num} * min_size {min_size}.'
     size = 0
     tried_time = 0
     while size < min_size:

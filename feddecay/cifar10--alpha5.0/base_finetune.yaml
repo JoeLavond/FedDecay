@@ -1,5 +1,5 @@
 use_gpu: True
-device: -1
+device: 0
 early_stop:
   patience: 5
 seed: 1
@@ -10,7 +10,7 @@ federate:
   total_round_num: 1000
   sample_client_rate: 0.2
   unseen_clients_rate: 0.2
-  client_num: 10000
+  client_num: 1000
 data:
   root: data/
   type: 'CIFAR10@torchvision'
