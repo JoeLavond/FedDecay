@@ -113,7 +113,6 @@ command_bash="$source_or_conda activate $conda_environment; CUDA_VISIBLE_DEVICES
 
 for exp_num in $(seq 1 1 "$max_gpu_experiment_count")
 do
-    echo ""
 
     for gpu_id in "${gpu_ids[@]}"
     do

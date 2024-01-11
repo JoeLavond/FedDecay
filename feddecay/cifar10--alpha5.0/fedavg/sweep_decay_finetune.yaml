@@ -1,5 +1,5 @@
 program: feddecay/cifar10--alpha5.0/fedavg/helper_sweep_decay_finetune.sh
-project: decay--extras
+project: decay--cifar10--alpha5.0
 
 method: grid
 metric:
