@@ -115,13 +115,22 @@ def get_trainer(model=None,
                                base_trainer=trainer)
 
     # -------------------------------
-    # custom
+    # FedDecay custom trainers
+    # These two methods are added for the FedDecay paper and are not part of
+    # the upstream FederatedScope / pfl_bench codebase.
 
     elif config.federate.method.lower() == "decay":
+        # FedDecay: applies within-round learning-rate decay to local updates.
+        # Controlled by cfg.trainer.beta, cfg.trainer.decay_scheme, and
+        # cfg.trainer.model_on_batch_or_epoch.
+        # See federatedscope/core/trainers/trainer_decay.py for full details.
         from federatedscope.core.trainers.trainer_decay import wrap_decay
         trainer = wrap_decay(trainer)
 
     elif config.federate.method.lower() == "FOMAML":
+        # First-Order MAML baseline: uses only the last local gradient step
+        # as an approximation to the meta-gradient (no second-order terms).
+        # See federatedscope/core/trainers/trainer_FOMAML.py for full details.
         from federatedscope.core.trainers.trainer_FOMAML import wrap_FOMAML
         trainer = wrap_FOMAML(trainer)
 

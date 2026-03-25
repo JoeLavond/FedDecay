@@ -10,12 +10,28 @@ def extend_training_cfg(cfg):
     cfg.trainer.type = 'general'
 
     # ------
-    # when should model be decayed?
-    # note that decay coefficients update every epoch
+    # FedDecay hyper-parameters (used when federate.method == 'decay')
+    # -------------------------------------------------------------------------
+    # Granularity at which the decay is applied within each local training
+    # round.  'epoch' decays once per local epoch (recommended and used in
+    # all paper experiments); 'batch' decays after every mini-batch.
     cfg.trainer.model_on_batch_or_epoch = 'epoch'
-    # default decay
+
+    # β ∈ (0, 1]: the within-round decay factor.
+    #   β = 1.0  → no decay; identical to vanilla FedAvg (safe default).
+    #   β < 1.0  → later local steps are attenuated; smaller β = stronger decay.
+    # Tuned via grid search over {0.2, 0.4, 0.6, 0.8} in the paper's sweeps.
     cfg.trainer.beta = 1.0
+
+    # Decay factor applied exclusively during the personalisation fine-tuning
+    # stage (cfg.trainer.finetune.before_eval = True).  Set to 1.0 so that
+    # fine-tuning steps are never attenuated, regardless of training-phase β.
     cfg.trainer.finetune_beta = 1.0
+
+    # Which decay schedule to use:
+    #   'exponential' (default): scale = β^k at local step k
+    #   'linear':                scale = max(0, 1 − β·k) at local step k
+    # Exponential decay was used for all results reported in the paper.
     cfg.trainer.decay_scheme = 'exponential'
     # ------
 
