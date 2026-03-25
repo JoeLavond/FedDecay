@@ -1,0 +1,167 @@
+\paragraph{Within-Round Learning Rate Decay.}
+From Equation~\ref{eq: methods}, FedSGD, FedAvg, and FOMAML fully include or omit gradient terms from the summation.
+We introduce within-round learning rate decay, {\bf FedDecay}, to enable a more general use of the local gradients.
+\edit{
+Within-round local learning rate decay is a simple, intuitive modification that allows for flexible, application-specific control over how much local gradients are used in local training, which determines the emphasis between minimizing Equation~\ref{eq: ims} and Equation~\ref{eq: rp}.
+}
+Equation~\ref{eq: phi} gives exponential within-round learning rate decay, which leads to Equation~\ref{eq: phi-decay}, the method gradient for FedDecay. 
+Our proposed method generalizes previous work by recovering FedSGD when $\beta = 0$ and FedAvg when $\beta = 1$.
+\begin{align}
+    & \theta_i^{(k)} = \theta_i^{(k - 1)} - \eta \beta^{k - 1} g_i^{(k - 1)} \textrm{ for all } k = 1, \ldots, K \label{eq: phi} \\
+    & g_{FedDecay} = \sum_{j = 0}^{K - 1} \beta^j g_i^{(j)} \label{eq: phi-decay}
+\end{align}
+\edit{
+Note, a within-round local learning rate of the form $\beta^{k - 1}$ in Equation~\ref{eq: phi} results in less emphasis on the successive local gradients for smaller $\beta$ in Equation~\ref{eq: phi-decay}.
+Importantly, we next identify that the later local gradients are associated with rapid personalization. 
+Thus, by introducing within-round local learning rate decay, we can place more relative emphasis on initial model success.
+}
+
+This work primarily focuses on exponential decay, simplifying the mathematical justification for the benefits of within-round learning rate decay.
+\edit{
+Exponential decay allows us to explicitly compute the relative emphasis between initial model success (minimizing Equation~\ref{eq: ims}) and rapid personalization (minimizing Equation~\ref{eq: rp}).
+Our primary theoretical contribution is determining that the within-round learning rate controls the prioritization of the above objectives. 
+}
+In Appendix~\ref{pf: decay-pf-taylor}, the coming results for FedDecay are presented more generally for arbitrary positive sequences. Additionally, Appendix~\ref{app: decay-app-scheme} demonstrates that linear decay can improve performance. 
+
+
+\paragraph{Balancing Initial Model Success and Rapid Personalization.}
+The justification for FedDecay comes from a Talyor analysis of the method gradients from Equations~\ref{eq: methods}. 
+As found by \citet{reptile}, each method gradient in Equations~\ref{eq: methods}, in expectation, is approximately the weighted sum of two other gradient terms: one which promotes initial model success and the second which prioritizes rapid personalization. 
+Consider the $K$-length sequence of loss functions $\{ F_i^{(j)} \}_{j = 0}^K$ for the $i$-th user's local update. 
+Let $\Tilde{g}_i^{(j - 1)} = \nabla F_i^{(j - 1)} (\theta_g)$  and $\Tilde{H}_i^{(j - 1)} = \nabla^2 F_i^{(j - 1)} (\theta_g)$ denote the gradient and Hessian, respectively, of the $j$-th loss function evaluated instead at the most recent global model.
+We take expectation over the user $i$ and mini-batches $k$ and $l$ from the local data. 
+Following the work of \citet{reptile}, we refer to those expected gradient terms $\mathbb{E} \mathopen[ \Tilde{g}_i^{(k)} \mathclose]$ and $\mathbb{E} \mathopen[ \Tilde{H}_i^{(k)} \Tilde{g}_i^{(l)} \mathclose]$ as AvgGrad and AvgGradInner, respectively. 
+First, moving in the negative direction of AvgGrad attempts to minimize the expected loss across users and data, encouraging the final shared model to perform well on all user data, otherwise known as initial model success. 
+Second, moving in the positive direction of AvgGradInner maximizes the inner product between gradients (as illustrated in Equation~\ref{eq: AvgGradInner} by the chain rule) from distinct mini-batches within the same user.
+Large inner products indicate that the gradient will recommend moving in a similar direction regardless of the input data, which helps facilitate rapid personalization.
+\begin{align}
+    & \mathbb{E} \left[ \Tilde{H}_i^k \Tilde{g}_i^l \right] 
+        = \frac{1}{2} \mathbb{E}\left[ \Tilde{H}_i^k \Tilde{g}_i^l + \Tilde{H}_i^l \Tilde{g}_i^k \right] 
+        = \frac{1}{2} \mathbb{E}\left[ \frac{\partial}{\partial \theta_g} \left( \Tilde{g}_i^k \Tilde{g}_i^l \right) \right] \label{eq: AvgGradInner}
+\end{align}
+
+Next, we will show that incorporating within-round learning rate decay allows for a flexible emphasis on each objective. Tuning the hyperparameters associated with the given decay scheme can optimize this emphasis. 
+Equation~\ref{eq: taylor} gives the expected method gradient of FedDecay for exponential decay and exists in greater generality in Section~\ref{pf: decay-pf-taylor}.
+\begin{align}
+\mathbb{E} \left[g_{FedDecay} \right] & \approx \left( \dfrac{1 - \beta^K}{1 - \beta} \right) \mathbb{E} \left[ \Tilde{g}_i^{(k)} \right] - \left( \dfrac{(1 - \beta^{K - 1})(1 - \beta^K)}{(1 + \beta)(1 - \beta)^2} \right) \mathbb{E} \left[ \Tilde{H}_i^{(k)} \Tilde{g}_i^{(l)} \right] \label{eq: taylor} 
+\end{align}
+\edit{
+Notably, including within-round learning rate decay results in coefficients for each gradient term of interest that depends on the decay hyper-parameter $\beta$. 
+More relative emphasis will be placed on AvgGrad when $\beta$ is small, and conversely, AvgGradInner when $\beta$ is large. 
+}
+
+As stated, AvgGrad and AvgGradInner also appear in the expected method gradients of FedSGD, FedAvg, and FOMAML~\citep{reptile}.
+By comparing the ratio of the weights of AvgGradInner to AvgGrad for the considered methods, we can assess each method's relative prioritization of rapid personalization vs. initial model success. 
+See Table~\ref{tab: gradient--ratios} and contrast the more flexible ratio of FedDecay with those of FedSGD, FedAvg, and FOMAML.
+FedSGD, FedAvg, and FOMAML have fixed ratios, given $K$.
+On the other hand, the ratio of FedDecay still depends on the choice of $\beta$, giving us much greater flexibility over the balance between initial model success and rapid personalization. 
+\edit{
+Especially in applications where communication is a bottleneck, $K$ may be required to be high. 
+In such applications, methods such as FedAvg and FOMAML, which increase in $K$, are forced to prioritize rapid personalization over initial model success, even if users all had copies of the same data. 
+In Section~\ref{sec: decay-exp}, we provide strong empirical evidence that, in general, placing additional emphasis on initial model success can improve performance after personalization.
+}
+\input{paper/content/tables/gradient--ratios}
+
+When users possess similar data, a method consisting of only AvgGrad terms (FedSGD) can perform well across all users.
+However, in cases where users' data diverges, an approach prioritizing AvgGradInner terms may be more suitable.
+Plausibly, most applications exist between the above two scenarios, especially for appropriate applications of federated learning. 
+In such cases, a method striking a flexible balance between AvgGrad and AvgGradInner terms could yield superior performance across a spectrum of statistical data heterogeneity.
+\edit{
+Our experimental results in Section~\ref{sec: decay-exp} consistently conclude that some decay improves personalized performance compared to either no emphasis on rapid personalization (FedSGD) or no decay (FedAvg). 
+Furthermore, in Appendix~\ref{app: decay-app-sens}, we highlight that the tuned values of $\beta$ are small for datasets with obvious similarities between users and large for datasets contrived to have a more extensive diversity between local datasets. 
+}
+
+In summary, introducing within-round learning rate decay enables more control over the training objective. 
+This additional flexibility allows FedDecay to adapt to the problem-specific data heterogeneity for better performance. 
+First, when local datasets are similar, a large amount of decay (small $\beta$) still emphasizes rapid personalization, resulting in improved personalized performance when fine-tuning. 
+Secondly, when local datasets have some minor similarities, placing the majority of the focus on rapid personalization but more emphasis on initial model success with a small amount of decay (large $\beta$) than FedAvg and FOMAML also improves personalized performance. 
+We intuitively believe that having a shared model that performs well for all users and fine-tunes well is often better than a model that fine-tunes well but may not have any initial model success, which is not a prerequisite for the rapid personalization objective in Equation~\ref{eq: rp}. 
+
+\paragraph{Convergence Assumptions and Analysis.}
+Within-round learning rate decay allows for an application-specific hyper-parameter tuning of the emphasis between initial model success and rapid personalization.
+Separate from the purpose of our work,  \citet{fedavg-conv} demonstrate that the convergence of FedAvg on non-independent and non-identically distributed (i.i.d.) local data sets is achieved with some learning rate at iteration $t$ of the form $\eta_t = \alpha_t = \frac{c}{t + d}$ where $c$ and $d$ are positive. 
+Note that the local update step $k$ of the communication round $n$ is equivalent to iteration $t = n * K + k$.
+\edit{
+This learning rate strategy is not within each round and does not exist to understand data heterogeneity. 
+We argue that this strategy is insufficient for convergence and balancing initial model success with rapid personalization.
+Performing federated training for many communication rounds is needed to guarantee a close-to-optimal objective function value. 
+However, the decay of the learning rate with each iteration places greater relative emphasis on rapid personalization with each communication round. 
+Unfortunately, this scheme results in a more prominent (relative) emphasis on personalization with each additional communication round, similar to how FedAvg and FOMAML were found to place an additional relative focus on personalization for many local update steps ($K$). 
+Hence, we lose the ability to prioritize initial model success for users with similar data as the learning rate decays with every iteration. 
+Additionally, we lose all interpretability about the degree of heterogeneity based on the size of the tuned values for $\beta$. 
+We no longer can infer that applications that perform well with large $\beta$ have similar local datasets (or conversely small $\beta$. 
+}
+
+Instead, by composing our within-round learning rate decay, with previous decay applied across-round (instead of each iteration), we can maintain the same convergence rate as FedAvg~\citep{fedavg-conv} while keeping the relative balance between initial model success and rapid personalization constant across communication rounds. 
+The resulting learning rate is given by $\eta_t = \alpha_{\lfloor t / K \rfloor} \beta_{(t \bmod K)}$ where $\beta_0 \neq 0$ and $\beta_{k + 1} \leq \beta_k$ for $k = 1, \ldots, K$.
+We extend the previous work \citet{fedavg-conv} to this modified decay scheme under the same assumptions.
+FedDecay converges with complexity of $\mathcal{O}(N^{-1})$ on non-i.i.d. data as total communication rounds $N \rightarrow \infty$ for both full and partial user participation.
+Please see Appendix~\ref{pf: decay-pf-conv} for additional details and proofs.
+\edit{
+Note that we do not believe that the theoretical finding that applying the previous decay scheme across round converges is particularly novel, nor do we consider it a primary contribution of our work. 
+However, we believe that explicit convergence guarantees for our proposal's application are essential to creating confidence in its implementation. 
+Hence, we believe the critical takeaway from this section is that our proposal allows us to adapt to application-specific data heterogeneity by adjusting the relative prioritization between objectives of initial model success and rapid personalization without sacrificing theoretical convergence. 
+}
+
+\begin{assumption}[Lipschitz Continuous Gradients]
+\label{ass: lipschitz}
+    For all users $i \in \{1, \ldots, M\}$, the local objective function $F_i$ is $L$-smooth. For all $v$ and $w$ in the domain of $F_i$, 
+    \begin{align*}
+        F_i(v) \leq F_i(w) + (v - w)^T \nabla F_i(w) + \dfrac{L}{2} \norm{v - w}_2^2 
+    \end{align*}
+\end{assumption}
+
+\begin{assumption}[Strong Convexity]
+\label{ass: convex}
+    For all users $i \in \{1, \ldots, M\}$, the local objective function $F_i$ is $\mu$-strongly convex. Similarly, 
+    \begin{align*}
+        F_i(v) \geq F_i(w) + (v - w)^T \nabla F_i(w) + \dfrac{\mu}{2} \norm{v - w}_2^2
+    \end{align*}
+\end{assumption}
+
+\begin{assumption}[Bounded Variance]
+\label{ass: grad-var}
+    Let mini-batch $\xi^{(n, k)}$ be sampled uniformly from the $i$-th user's local data. For all $n$ and $k$, an upper bound exists on the variance of stochastic gradients in each user $i$. 
+    \begin{align*}
+        \mathbb{E} \norm{\nabla F_i^{(n, k)} \left( \theta_i^{(n, k)}, \xi_i^{(n, k)} \right) - \nabla F_i \left( \theta_i^{(n, k)} \right)}^2 \leq \sigma_i^2
+    \end{align*}
+    where $F_i^{(n, k)}$ is the average for $i$-th user's local loss evaluated on data $\xi_i$.
+\end{assumption}
+
+\begin{assumption}[Bounded Expected Squared Norm]
+\label{ass: grad-norm}
+    The expected squared norm of stochastic gradients is uniformly bounded. Similarly, 
+    \begin{align*}
+        \mathbb{E} \norm{\nabla F_i^{(n, k)} ( \theta_i^{(n, k)}, \xi_i^{(n, k)} )}^2 \leq G^2
+    \end{align*}
+\end{assumption}
+
+Here, we consider the more general weighted objective function $F = \sum_{i \in C} p_i F_i$ and aggregation step given by Equation~\ref{eq: global-partial-weighted}.
+Recall that $F_i$ is the average local loss over all of the local data of the $i$-th user and $S \subseteq C$ of fixed size $\abs{S}$ contains the users chosen to update the global model in a given round of Federated Learning. 
+$S$ is sampled uniformly without replacement for each round with probabilities $p_i$.
+\begin{align}
+    \theta_g \leftarrow \dfrac{\abs{C}}{\abs{S}} \sum_{i \in S} p_i \theta_i^{(K)}  \label{eq: global-partial-weighted}
+\end{align}
+
+Furthermore, let $F^*$ and $F_i^*$ denote the global minimums of the average objective function of users and the average local loss of the $i$-th user over their data, respectively.
+We introduce $\Gamma = F^* - \sum_{i = 1}^M p_i F_i^*$ to represent the degree to which data sets are non-independent and non-identically distributed.
+The magnitude of $\Gamma$ reflects how heterogeneous the data distributions are and $\Gamma \rightarrow 0$ as the number of local data samples grows only when data are iid.
+
+\begin{theorem}[Convergence Of FedDecay]
+\label{thm: conv}
+    Let Assumptions \ref{ass: lipschitz} to \ref{ass: grad-norm} hold and $L$, $\mu$, and $G$ be defined therein and denote the condition number with $\kappa = L / \mu$.
+    Choose a positive, locally decaying sequence $\beta_{k + 1} \leq \beta_k$ for $k = 1, \ldots, K$. 
+    With a learning rate for iteration $t = nK + k$ ($k$ local updates into round $n + 1$) of the form $\eta_t = \alpha_{\lfloor t/K \rfloor} \beta_{t \bmod K}$ for positive $\beta_j \geq \beta_{j + 1}$ and some $\alpha_j = \dfrac{c}{j + d}$.
+    If $\alpha_j = \dfrac{3}{\mu \beta_{K - 1} (j + d)}$ where $d = \max \left\{ \dfrac{12 \kappa}{\beta_{K - 1}}, 4 - \dfrac{2}{K} \right\}$ then 
+    \begin{align}
+        & \mathbb{E} \left[ F ( \theta_g^{(N)} ) \right] - F^* \leq \dfrac{\kappa}{N + d - 2} \Big( \dfrac{9(B + D)}{2 \mu \beta_{K - 1}^{2}} + \dfrac{(1/K) + d - 2}{2} \times \mathbb{E} \norm{\theta_g^{(0)} - \theta_g^*}^2 \Big) \\
+        & \quad \textrm{ where } B = \sum_{i = 1}^M p_i^2 \sigma_i^2 + 6 L \Gamma + 2 \left( G (K - 1) \beta_0 \beta_{K - 1}^{-1} \right)^2 \\
+        & \qquad \textrm{ and } D = \dfrac{\abs{C} - \abs{S}}{\abs{S}(\abs{C} - 1)}
+    \end{align}
+\end{theorem}
+
+The convergence analysis outlined in Theorem \ref{thm: conv} emphasizes that the gap between the optimal solution $F^*$ and the value $F(\theta_g^{(N)})$ evaluated on the global model, produced by FedDecay after $N$ total communication rounds, converges to zero as $N \rightarrow \infty$. 
+Akin to the outcomes seen with FedAvg, convergence happens at rate $\mathcal{O}(N^{-1})$.
+However, the advantage of FedDecay lies in its ability to achieve this convergence while accommodating a spectrum of diverse local updates from the sequence $\left\{ \beta_k \right\}_{k = 1}^K$. 
+As illustrated in Section~\ref{sec: decay-method-decay}, incorporating within-round learning rate decay enables a versatile balance between initial model success and rapid personalization, allowing us to adapt to application-specific data heterogeneity. 
+In conclusion, this enriched flexibility does not have to come at the expense of deteriorating algorithmic performance.

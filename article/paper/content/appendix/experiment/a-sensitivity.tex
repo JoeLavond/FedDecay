@@ -1,0 +1,21 @@
+FedDecay demonstrates sensitivity to the hyper-parameter $\beta$ choice; see Table~\ref{tab: params--sensitivity}.
+Specifically, in the case of the FEMNIST data set, runs with $\beta = 0.8$ were prematurely halted due to hyperband stopping, indicating inferior performance compared to smaller $\beta$ choices.
+Conversely, the remaining $\beta$ values improved accuracy for new and existing users.
+Notably, the FEMNIST data set, comprised of handwritten characters contributed by different authors, showcases inherent data heterogeneity.
+This real-world example underscores the substantial user similarities owing to the shared language in which all characters are written.
+\input{paper/content/tables/params--sensitivity}
+
+This trend aligns with our assertion in Section~\ref{sec: decay-method-decay}, where we indicated that prioritizing AvgGrad terms (via smaller $\beta$ values) would be beneficial in cases where users share similarities.
+Consequently, we observe FedSGD outperforming FedAvg in this context.
+However, FedSGD, which does not emphasize AvgGradInner (generalization, rapid personalization), is beaten by FedDecay.
+Here, we observe that having a more flexible balance on initial model success, generalization, and fast personalization results in better performance for various choices of $\beta$.
+
+Unlike FEMNIST, heterogeneous users are created from SST2 by partitioning data into 50 clients using Dirichlet allocation with $\alpha = 0.4$.
+Many extreme non-iid data sets exist, but $\alpha = 0.4$ results in reasonably non-iid users.
+Revisiting the claim discussed in our Section~\ref{sec: decay-method-decay}, we anticipate that an increased emphasis (achieved via larger $\beta$ values) on AvgGradInner is required as non-iid user diversity grows.
+In general, larger values of $\beta$ perform better on SST2.
+While FedSGD demonstrates superior test-set performance compared to FedAvg, its validation-set accuracy lags behind FedAvg's, preventing it from securing the best run on SST2 for FedAvg in Section~\ref{sec: decay-exp-gen}. 
+More importantly, FedDecay balances AvgGrad and AvgGradInner terms, yielding significantly improved metrics over FedAvg.
+Notably, FedDecay still has the best overall performance among the three methods.
+Lastly, in the case of the PUBMED data set, our method's performance seems resilient to the choice of $\beta$.
+However, a straightforward grid search enhances performance for new and existing users over FedAvg and FedSGD.

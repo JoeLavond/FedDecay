@@ -1,0 +1,10 @@
+\begin{figure*}[htbp]
+    \centering
+    \includegraphics[width=.8\textwidth]{images/decay-scheme.png}
+    \caption{
+        Average test set accuracy for new and existing users produced by FedDecay with different decay schemes compared with FedAvg.
+        Either decay scheme with a simple grid search leads to performance improvements for all users on FEMNIST and SST2. 
+        Only linear decay on the new PUBMED user performs worse than FedAvg, but recall there is only one held-out user.
+    }
+    \label{fig: decay-schemes}
+\end{figure*}

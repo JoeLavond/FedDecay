@@ -1,0 +1,29 @@
+\paragraph{Limitations.} 
+While our study offers valuable insights into the performance of our proposed method across various datasets, we acknowledge certain limitations that open avenues for future exploration and optimization.
+First, our analysis concentrated on a selection of data heterogeneity scenarios, encompassing natural and partitioned heterogeneity.
+We acknowledge that our findings may not fully encapsulate the dynamics present in more extreme non-iid scenarios. 
+\edit{
+We do not believe our proposal would offer performance improvements for unusually distant local datasets. 
+In Section~\ref{sec: decay-exp}, we find that placing additional emphasis on initial model success results in grander personalized performance. 
+Our intuition is based on the hypothesis that a shared model that performs well for all users and can fine-tune well is often a better initialization than a model that fine-tunes well but may have no initial model success. 
+When users are highly different, finding a model that will perform well for all of them is often impossible. 
+In this case, we expect our method to suggest using $\beta = 1$ (no decay) and recover the FedAvg solution. 
+}
+
+Next, we focus mainly on exponential decay to show that scaling local gradient updates allows for balancing the objectives of initial model success and the ability to personalize rapidly.
+However, many alternative decay schemes for learning rates exist, but we have only briefly explored linear decay in Appendix~\ref{app: decay-app-scheme}.
+Future research may explore these alternative decay schemes to enrich our understanding and potentially enhance our method's performance.
+
+Finally, we evaluated our proposed method in isolation without extensively exploring its compatibility with other state-of-the-art techniques.
+While this approach enabled us to assess our method's intrinsic merits, practical deployment often requires combining multiple strategies for optimal results.
+Much of our theoretical work relies on stochastic gradient descent as the optimizer, and we intend to expand our theory to alternative optimizers in future work.
+
+\paragraph{Conclusion.}
+\edit{
+In summary, this study introduces an unexplored approach to federated learning. It incorporates within-round learning rate decay to balance the objectives of initial model success and rapid personalization. 
+This additional flexibility allows FedDecay to adapt, with less decay for more considerable user differences, to the problem-specific data heterogeneity for better performance without changing the convergence rate. 
+In Section~\ref{sec: decay-exp}, we consistently demonstrate that some within-round learning rate decay outperforms both no emphasis on rapid personalization (FedSGD) and no decay (FedAvg). 
+In addition to consistently better performance than the popular FedAvg procedure, we often return metrics similar to personalized methods that require additional memory and computation, mainly when generalizing to new users. 
+Notably, within-round learning rate decay does not require additional memory and computationally requires only a simple grid search to find improved solutions.
+In summary, we propose a cheap, interpretable modification to FedAvg that consistently returns a 1-4 percent increase in average test set accuracies. 
+}

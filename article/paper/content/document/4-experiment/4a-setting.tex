@@ -1,0 +1,51 @@
+In this section, we comprehensively evaluate our proposed method, FedDecay, alongside other prominent federated learning techniques, using the benchmark established by \citet{pfl-bench}.
+To ensure uniformity, we integrate our approach into their code base available at GitHub~\footnote{Original benchmark at  \url{https://github.com/alibaba/FederatedScope/tree/Feature/pfl_bench}}~\footnote{Our modifications at \url{https://github.com/JoeLavond/FedDecay/tree/bench}}.
+We leverage this established infrastructure to experiment with identical data sets and models to facilitate a rigorous and fair comparison.
+
+\paragraph{Data.} 
+As discussed in \citet{generalization}, generalization in federated learning refers both to new users (participation gap) and new data for existing users (out-of-sample gap).
+Our experiments involve holding out both users and data to study both types of generality in the following manner.
+For each data set, we maintain 20 percent of users as a holdout group, simulating the challenge of generalizing to new users.
+Also, we divide each user's data into distinct training, validation, and testing subsets.
+Our experiments encompass the various data sets FEMNIST~\citep{femnist}, SST2~\citep{sst-92, sst-94}, and PUBMED~\citep{pubmed}.
+This diversified selection of data sets empowers us to investigate performance across varied domains, including vision, text, and graph data.
+We use the default data settings chosen by \citet{pfl-bench}.
+\begin{itemize}
+    \item FEMNIST: A 62-way handwritten character classification problem with images of size $28 \times 28$.
+    This sub-sampled version of FEMNIST in \citet{pfl-bench} contains 43,400 images from 3,550 authors as clients.
+    \item SST2: A sentiment classification data set containing 68,200 movie review sentences labeled with human sentiment.
+    Partitioned into 50 clients using Dirichlet allocation with $\alpha = 0.4$, it enables the assessment of text-based applications.
+    \item PUBMED: A graph of 19,717 nodes and 44,338 edges, this data set classifies scientific publications into three classes.
+    Louvain~\citep{louvain} community partitioning partitions the graph into five users.
+\end{itemize}
+
+\paragraph{Model.} 
+In our experiments, we adhere to the model architectures prescribed by \citet{pfl-bench} for consistency and comparative purposes. 
+\begin{itemize}
+    \item FEMNIST: We employ a Convolutional Neural Network (CNN) with a hidden size 2,048.
+    The model incorporates two convolutional layers with $5 \times 5$ kernels, followed by max pooling, batch normalization, ReLU activation, and two dense layers.
+    \item SST2: Our model leverages a pre-trained BERT-Tiny model~\citep{model-sst2} with 2-layer Transformer encoders and a hidden size 128.
+    \item PUBMED: We employ the Graph Isomorphism Neural Network (GIN)~\citep{model-pubmed}, featuring 2-layer convolutions with batch normalization, a hidden size 64, and a dropout rate of 0.5.
+\end{itemize}
+
+\paragraph{Methods.} To establish the prowess of FedDecay, we subject it to a rigorous comparison with a range of federated learning techniques.
+\begin{itemize}
+    \item Federated Learning: In this category, we include FedAvg/Reptile~\citep{fedavg, reptile} and FOMAML~\citep{reptile}. 
+    These methods make up the most relevant baselines to our proposal as they all can be seen, like our proposal, as various within-round learning rate scheduling.
+    \item Personalized Federated Learning: These encompass Ditto~\citep{ditto}, FedBN~\citep{fedbn}, FedEM~\citep{fedem}, and pFedMe~\citep{pfedme}.
+    Interpret these PFL solutions as an upper bound on what performance could be for our method as they require additional computation cost and memory.
+\end{itemize}
+
+\paragraph{Hyperparameters.} 
+We extend the hyper-parameter optimization methodology outlined in the original benchmark paper.
+Leveraging a grid search technique, we conduct comprehensive explorations, leveraging early termination and hyperband stopping \citep{wandb}.
+Our exhaustive search covers a spectrum of hyperparameters, as detailed in Table~\ref{tab: tuning--grid}.
+\input{paper/content/tables/tuning--grid}
+
+The final hyperparameters for each run are selected based on the highest average validation accuracy across users.
+If runs do not terminate early, they will run for 1000, 500, and 500 epochs for FEMNIST, SST2, and PUBMED, respectively.
+Other fixed configurations worth noting are 20 percent partial user participation for FEMNIST and SST2, batch size 32 for FEMNIST, and full-user participation with full-batch training for PUBMED.
+To ensure a fair comparison and alignment with other methods, we maintain a fixed learning rate ($\alpha$) for FedDecay, while $\beta$ is the key hyperparameter explored.
+Fine-tuning happens for one epoch with the same learning rate $\alpha$ for all methods. 
+We conduct our experiments on 4 NVIDIA GeForce RTX 3090 GPUs.
+See Appendix~\ref{app: decay-app-sens} to analyze FedDecay's performance under misspecified $\beta$. 

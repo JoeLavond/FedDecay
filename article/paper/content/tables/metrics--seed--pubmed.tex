@@ -1,0 +1,27 @@
+\begin{table*}[h]
+    \centering
+        \begin{tabular}{|l|rrr|rrr|}
+        \hline
+            & 
+                \multicolumn{3}{c|}{Existing Users} & 
+                \multicolumn{3}{c|}{New Users} \\ 
+            Method & 
+                $\Bar{Acc}$ & $\Breve{Acc}$ & $\sigma_{Acc}$ &
+                $\Bar{Acc}$ & $\Breve{Acc}$ & $\sigma_{Acc}$ \\
+        \hline
+            FOMAML & 
+                0.8597 & 0.8234 & 0.0293 & 
+                0.7855 & - & - \\
+            FedAvg & 
+                0.8666 & 0.8313 & 0.0328 & 
+                0.7914 & - & - \\
+            \textbf{FedDecay} & 
+                \textbf{0.8704} & \textbf{0.8420} & 0.0244 & 
+                \textbf{0.7950} & - & - \\
+        \hline
+        \end{tabular}
+    \caption{
+        Generalization metrics for new and existing users on the PUBMED (graph) data set. Values reported are the average metric for each single-model-based method's top run across several seeds. FedDecay produces the maximum average test set accuracy on new and existing users. With five total users, only a single user is held out to evaluate generalization. Hence, there are no values for the bottom ten percentile ($\Breve{Acc}$) or standard deviation ($\sigma_{Acc}$) for new users.
+    }
+    \label{tab: metrics--seed--pubmed}
+\end{table*}

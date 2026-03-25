@@ -1,0 +1,351 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc} % allow utf-8 input
+\usepackage[T1]{fontenc}    % use 8-bit T1 fonts
+\usepackage{hyperref}       % hyperlinks
+\usepackage{url}            % simple URL typesetting
+\usepackage{booktabs}       % professional-quality tables
+\usepackage{amsfonts}       % blackboard math symbols
+\usepackage{nicefrac}       % compact symbols for 1/2, etc.
+\usepackage{microtype}      % microtypography
+
+
+% ---------------------------------------
+% 
+\usepackage{fullpage}
+\usepackage{natbib}
+%\bibliographystyle{abbrvnat}
+\usepackage{graphicx}
+
+% custom packages
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{fact}{Fact}
+\newtheorem{assumption}{Assumption}
+
+% custom definitions
+\setlength{\parindent}{0pt}
+
+\usepackage{amsmath, mathtools}
+\newcommand\norm[1]{\left\lVert#1\right\rVert}
+
+\usepackage{multirow}
+\usepackage[dvipsnames]{xcolor}
+\definecolor{first}{HTML}{0077BB}
+\newcommand\firstplace[1]{\textcolor{first}{\textbf{#1}}}
+\definecolor{second}{HTML}{009988}
+\newcommand\secondplace[1]{\textcolor{second}{\underline{\smash{}#1}}}
+\definecolor{third}{HTML}{CC3311}
+\newcommand\thirdplace[1]{\textcolor{third}{\textit{#1}}}
+
+
+\usepackage{subfiles}
+\title{
+    STOR 712 Project Proposal \\
+    Can We Improve Federated Learning With Learning Rate Scheduling?
+}
+
+\author{
+    Joseph Lavond and Peter Lin
+}
+
+
+
+\begin{document}
+
+
+\maketitle
+
+
+\section{Background}
+
+\paragraph{Federated Learning (FL)}
+
+Federated Learning (FL) is a potential solution to constructing a shared model (global) from several local data sources that cannot be exchanged or aggregated.
+FL is an iterative procedure involving rounds of model improvement until it meets some criteria.
+See Figure~\ref{fig: fl} for a graphical representation of the following steps in each iteration of federated training.
+These rounds send the current global model to local entities (users) and select some to update the global model. 
+The chosen users train their local copy of the model on their data and communicate the resulting model, where the returning models are aggregated to create a new global model. 
+The most popular aggregation method of FL is FedAvg~\citep{fedavg}, which sets the new global model to the average of returning models.
+
+\begin{figure}
+    \centering
+    \includegraphics[width = .7\textwidth]{STOR_712_Project/images/fedavg.png}
+    \caption{Single Iteration of Federated Training}
+    \label{fig: fl}
+\end{figure}
+
+
+\paragraph{Personalized Federated Learning (pFL).}
+When local data are not independent or identically distributed, ensuring good performance across different users with a single shared global model can be challenging.
+Recent works \citep{pfl-bench} argue instead that the focus should be on personalized methods that output models adapted to the local data.
+The simplest solution involves fine-tuning the shared global model for each user after the federated learning process has terminated.
+More complex solutions include learning a model for each user \citep{ditto}, global sharing of a subset of the entire model \citep{fedbn}, and viewing user data as a mixture of distributions \citep{fedem}.
+We complain that the above methods require significant increases in computation and memory requirements. 
+Can we instead find a global model, without additional computation or memory, that acts as a good initialization for fine-tuning to each user that performs as well as more complex personalized methods?
+
+
+%
+\paragraph{Meta Learning.}
+A highly related perspective to personalized federated learning is meta-learning, which attempts to learn a good model initialization that converges quickly for downstream tasks.
+Although these tasks are not defined to be closely related, we can think of the personalized federated learning setting as a subset of the field of meta-learning where data heterogeneity is the source of task diversity. 
+Several recent attempts have applied meta-learning algorithms to personalized federated learning.
+In addition to applying traditional meta-learning algorithms to federated learning \citep{maml}, a newer variant, Reptile~\citep{reptile}, can be shown to be equivalent to FedAvg in the federated learning setting in the case that users have local data of equal size.
+
+
+
+
+%
+\section{Proposal}
+
+Consider the following notations.
+Let $N$ denote the number of communication rounds of $K$ local update steps for federated learning by users $C = \left[1, \ldots, M \right]$ with local objective functions $F_i$.
+Define $\theta_g^{(n)}$ and $\theta_i^{(n, k)}$ as the global model at communication round $n$ and the $i$-th user's copy of that global model after $k$ local update steps with learning rate $\eta$, respectively.
+We give the standard update in Equation~\ref{eq: theta}, which gives the FedAvg or FedSGD procedure when $K > 1$ or $K = 1$, respectively.
+\begin{align}
+    & \theta_i^{(n, k)} = \theta_i^{(n, k - 1)} - \eta \times g_i^{(n, k)} \textrm{ for } k = 1, \ldots, K \textrm{ where } g_i^{(n, k)} \coloneqq \nabla F_i(\theta_i^{(n, k - 1)}) \label{eq: theta}
+\end{align}
+Let $S^{(n)} \subseteq C$ denote the set of users participating in the update of the global model for a given communication round of federated training.
+We intend to use the term full user participation for the case $S^{(\cdot)} = C$. 
+The global update for full user participation aggregates either the locally updated copy or changes made by local updates; see Equation~\ref{eq: global-full}. 
+\begin{align}
+    \theta_g^{(n + 1)} &= \dfrac{1}{M} \sum_{i \in C} \theta_i^{(n, K)} = \theta_g^{(n)} + \dfrac{1}{M} \sum_{i \in C} \left( \theta_i^{(n, K)} - \theta_g^{(n)} \right) \label{eq: global-full}
+\end{align}
+
+Depending on the choice of local update, changes made by local training, $\theta_i^{(n, K)} - \theta_g^{(n)}$, can often be expressed as $-\eta \times g_{\textrm{Method}}$.
+Equation~\ref{eq: methods} presents the expressions for this model difference for FedSGD, FedAvg, and First-Order Model-Agnostic Meta-Learning (FOMAML) described in \cite{maml}.
+\begin{align}
+    & g_{FedSGD} = g^{(n, 1)}, \qquad g_{FedAvg} = \sum_{j = 1}^K g^{(n, j)}, \qquad g_{FOMAML} = g^{(n, K)}  \label{eq: methods}
+\end{align}
+
+\cite{maml} states that for federated learning to be most successful, it must provide better personalization and a solid initial model.
+In the balanced user data case, FedSGD can be considered an approximation to the situation where all data is aggregated.
+Hence, $g^{(\cdot, 1)}$ can be considered highly important for returning a solid initial model, which is necessary for users without sufficient data for fine-tuning.
+Other objectives to simultaneously address are improved personalized models and fast convergence.
+Although meta-learning perspectives (FedAvg/Reptile and FOMAML) are designed to produce an initialization that converges quickly, the current adaptations for federated learning place weight on only the final or all epochs of local training equally.
+We believe that placing additional emphasis on the early $g_k$ can improve the applicability of meta-learning solutions to federated learning. 
+
+\medskip
+We propose learning rate scheduling within local updates to adjust gradient emphasis.
+One such learning rate schedule for emphasizing early gradients each round is exponential decay.
+See Equation~\ref{eq: phi} and Equation~\ref{eq: phi-decay}, respectively.
+Viewing our proposal as a function of $t = nK + k$ iterations, our method can be considered a locally decaying, cyclic learning rate where $\eta_t = \eta \times \beta^{(t \bmod K)}$.
+Further motivation and justification for choosing exponential decay specifically are given in Section~\ref{sec: taylor}.
+However, we believe intuitively that, with a greater relative emphasis on $g_1$, our method may result in better initial accuracy than FedAvg or meta-learning algorithms. 
+Furthermore, our method simplifies to FedSGD when $\beta = 0$ and FedAvg when $\beta = 1$.
+\begin{align}
+    & \phi_i^{(n, k)} = \phi_i^{(n, k - 1)} - \eta \beta^{(k - 1)} \times \nabla F_i(\phi_i^{(n, k - 1)}) \textrm{ for } k = 1, \ldots, K \textrm{ where } \beta \in \left[0, 1\right] \label{eq: phi} \\
+    & g_{FedDecay} = \dfrac{\phi_i^{(n, K)} - \phi_i^{(n, 0)}}{-\eta} = \sum_{j = 1}^K \left( \dfrac{\phi_i^{(n, j)} - \phi_i^{(n, j - 1)}}{\eta} \right) = \sum_{j = 1}^K \beta^{(j - 1)} \nabla F_i(\phi_i^{(n, k - 1)}) \label{eq: phi-decay} 
+\end{align}
+
+
+%
+\section{Taylor Analysis}
+\label{sec: taylor}
+
+Our proposal is motivated and designed upon arguments given in \cite{reptile}.
+We modify their Taylor analysis for our new proposal to compare the ability of different methods to personalize and produce models with good initial success.
+Consider, more generally, the gradient from a sequence of loss functions $\{ F_i^{(j)}(\theta^{(n, j)}) \}_{j = 0}^{K - 1}$. 
+For example, the above sequence could be a local objective function evaluated on different mini-batches.
+Define $\Tilde{g}_i^{(n, k)} = \nabla F_i^{(k - 1)} (\theta_g^{(n)})$ and $\Tilde{H}_i^{(n, k)} = \nabla^2 F_i^{(k - 1)} (\theta_g^{(n)})$ as the gradient and Hessian of the $k$-th loss function evaluated at the current global model.
+When we take expectations over the local updates of different methods, including those in Equation~\ref{eq: methods}, we are left with two quantities of interest, $\mathbb{E}_{i, k} \mathopen[ \Tilde{g}_i^{(n, k)} \mathclose]$ (AvgGrad) and $\mathbb{E}_{i, k, l} \mathopen[ \Tilde{H}_i^{(n, k)} \Tilde{g}_i^{(n, l)} \mathclose]$ (AvgGradInner).
+First, $g_{Method}$ with a positive emphasis on AvgGrad will move towards the goal of joint training, minimizing the expected loss over users (initial model success) 
+Second, the negative emphasis on AvgGradInner will help maximize the inner product between gradients (see Equation~\ref{eq: AvgGradInner}) of different mini-batches within the same user (improving generalization and allowing rapid personalization), respectively.
+\begin{align}
+    & \mathbb{E}_{i, k, l} \left[ \Tilde{H}_i^{(n, k)} \Tilde{g}_i^{(n, l)} \right] 
+        = \frac{1}{2} \mathbb{E}\left[ \Tilde{H}_i^{(n, k)} \Tilde{g}_i^{(n, l)} + \Tilde{H}_i^{(n, l)} \Tilde{g}_i^{(n, k)} \right] 
+        = \frac{1}{2} \mathbb{E}\left[ \frac{\partial}{\partial \theta_g^{(n)}} \left( \Tilde{g}_i^{(n, k)} \Tilde{g}_i^{(n, l)} \right) \right] \label{eq: AvgGradInner}
+\end{align}
+
+Recall that local data sets are not required to be independent and identically distributed.
+When users have similar data, a method that can be expressed as only AvgGrad terms (FedSGD) can perform well for all users. 
+However, when users have distinct data, it is plausible that no single shared model can fit well, and instead, AvgGradInner terms should be prioritized.
+Plausibly, most applications exist between the above two scenarios.
+We believe a method with a flexible balance between its use of AvgGrad and AvgGradInner terms may exhibit better performance (initial model success, rapid personalization, and generalization) on a spectrum of statistical data heterogeneity between users.
+
+\medskip
+See Table~\ref{tab: limit} for the ratio of gradient terms emphasizing personalization and generalization (AvgGradInner) to those promoting the goal of joint training (AvgGrad) for various methods.
+FedDecay is the only method with a flexible ratio to balance the above trade-off, especially as the number of local steps becomes large (or communication becomes sparse).
+See Section~\ref{pf: taylor} for the mathematical derivation for FedDecay's values, including more general $\beta$-sequences.
+However, previous literature for producing an initial model focuses too much on only either initial model success or personalization. 
+FedSGD will never emphasize personalization, while the meta-learning algorithms place too much focus on fine-tuning.
+Instead, FedDecay can place application-specific emphasis on AvgGrad or AvgGradInner terms with the tuning of $\beta$ to adapt to user dissimilarities. 
+\subfile{tables/gradient--ratios}
+
+
+
+%
+\section{Convergence Analysis}
+\label{sec: conv}
+
+In this section, we aim to demonstrate that although we generalize the FedSGD and FedAvg updates for greater flexibility, algorithmic convergence remains similar up to constants.
+Additionally, we modify FedDecay from Equation~\ref{eq: phi-decay} to the more general local update $\sum_{j = 1}^K \beta_j g_i^{(n, j)}$ with ${0 < \beta_{j + 1} \leq \beta_j}$.
+Although we believe that the exponential decay is intuitively and mathematically reasonable, as discussed in Section~\ref{sec: taylor}, other decaying sequences may also offer benefits.
+Hence, we demonstrate that even with the more general local decay, federated learning converges in $\mathcal{O}(N^{-1})$ for full and partial user participation with non-iid data under the following assumptions.
+Recall $F_i$ is the local objective function of the $i$-th user, for example, average loss over their training data.
+Since $F_i$ is a function of all training data, it can be considered a function of only model weights.
+However, the training data in the mini-batch will impact the gradient estimate when we compute a stochastic gradient. 
+Hence, we use $\nabla \hat F_i(\cdot, \xi)$ and $\nabla F_i(\cdot)$ to distinguish between the stochastic and full-batch gradients clearly.
+
+\begin{assumption}
+\label{ass: lipschitz}
+    For all users $i \in \{1, \ldots, M\}$, the local objective function $F_i$ is $L$-smooth. For all $v$ and $w$ in the domain of $F_i$, 
+    \begin{align*}
+        F_i(v) \leq F_i(w) + (v - w)^T \nabla F_i(w) + \dfrac{L}{2} \norm{v - w}_2^2 
+    \end{align*}
+\end{assumption}
+
+\begin{assumption}
+\label{ass: convex}
+    For all users $i \in \{1, \ldots, M\}$, the local objective function $F_i$ is $\mu$-strongly convex. For all $v$ and $w$ in the domain of $F_i$, 
+    \begin{align*}
+        F_i(v) \geq F_i(w) + (v - w)^T \nabla F_i(w) + \dfrac{\mu}{2} \norm{v - w}_2^2 
+    \end{align*}
+\end{assumption}
+%Note the above hold when users have different Lipschitz and strong-convexity parameters with $L = \max(L_i)$ and $\mu = \min(\mu_i)$.
+
+\begin{assumption}
+\label{ass: grad-var}
+    Let $w_t^i$ be the $i$-th user's local model at iteration $t = nK + k$ (k local updates into round n) and $\xi_t^i$ be sampled uniformly at random from the $i$-th user's local data.
+    The variance of stochastic gradients in each device is bounded. For all $i \in \left\{ 1, \ldots, M \right\}$, 
+    \begin{align*}
+        \mathbb{E} \norm{\nabla \hat F_i \left( w_t^i, \xi_t^i \right) - \nabla F_i \left( w_t^i \right)}^2 \leq \sigma_i^2
+    \end{align*}
+
+\end{assumption}
+
+\begin{assumption}
+\label{ass: grad-norm}
+    The expected squared norm of stochastic gradients is uniformly bounded. For all $i \in \left\{ 1, \ldots, M \right\}$, 
+    \begin{align*}
+        \mathbb{E} \norm{\nabla \hat F_i \left(w_t^i, \xi_t^i \right)}^2 \leq G^2 \textrm{ for some } G > 0
+    \end{align*}
+\end{assumption}
+
+\begin{theorem}[Full User Participation]
+\label{thm: full}
+    Let Assumptions \ref{ass: lipschitz} to \ref{ass: grad-norm} hold and $L$, $\mu$, and $G$ be defined therein. Choose a locally decaying, cyclic learning rate for iteration $t = nK + k$ ($k$ local updates into round $n$) of the form $\eta_t = \alpha_{\lfloor t/K \rfloor} \beta_{(t \bmod K)}$ for some $\alpha_j = \frac{c}{j + d}$ and positive $\beta_j \geq \beta_{j + 1}$. \\
+    With ${\kappa = \dfrac{L}{\mu}}$, ${d = \max \left\{ \dfrac{12 \kappa}{\beta^{(K - 1)}}, 4 - \dfrac{2}{K} \right\}}$ and ${\alpha_t = \dfrac{3}{\mu \beta^{(K - 1)} (t + d)}}$, then
+    \begin{align*}
+        & \mathbb{E} \left[ F ( \theta_g^{(N)} ) \right] - F^* \leq \dfrac{\kappa}{N + d - 2} \left( \dfrac{9B}{2 \mu \beta^{(2K - 2)}} + \dfrac{(1/K) + d - 2}{2} \times \mathbb{E} \norm{\theta_g^{(1)} - \theta_g^*}^2 \right) \\
+        & \textrm{where } B = \sum_{i = 1}^M p_i^2 \sigma_i^2 + 6 L \Gamma + 2 \left( G (K - 1) \beta_{(1 - K)} \right)^2 \textrm{ and } \Gamma = F^* - \sum_{i = 1}^M p_i F_i^*
+    \end{align*}
+    for $N$ communication rounds under full user participation of $K$ local update steps.
+\end{theorem}
+\begin{proof}
+    \renewcommand{\qedsymbol}{}
+    See Section~\ref{pf: full}
+\end{proof}
+
+Convergence describes the difference, in expectation, of function value for the weighted average of local user objectives, $F(\theta) = \sum_{i \in C} p_i F_i(\theta)$ between the global model after $N$ iterations ($\theta_g^{(N)}$) and the actual minimizer of $F$. 
+Theorem~\ref{thm: full} establishes that this difference between the optimal solution point and the global model produced by FedDecay goes to zero, similar to those produced by FedAvg.
+But importantly, FedDecay can achieve the same rate of improvement with very different updates. 
+With local learning rate decay, we can achieve a flexible balance of prioritizing initial model success with rapid personalization and generalization (Section~\ref{sec: taylor}).
+Our work shows that this additional flexibility comes without seriously degrading algorithmic performance. 
+
+
+%
+\section{Numerical Results}\
+
+In this section, we evaluate our proposed method, FedDecay, against other federated learning methods on the benchmark created by \cite{pfl-bench}.
+We implement our method to the code repository \url{https://github.com/alibaba/FederatedScope/tree/Feature/pfl_bench} for experiments with the same data sets and models.
+We aim to demonstrate that our method personalizes well for new users and those who participated in the federated learning training process.
+
+
+\paragraph{Data.} 
+The utilized benchmark holds out 20\% of users to evaluate generalization to new users.
+Each user has data split into training, validation, and testing sets.
+Results are repeated across several data sets, including FEMNIST~\citep{femnist}, SST2, and PUBMED.
+Such choice of data sets allows us to examine performance across vision, text, and graph applications, respectively.
+
+
+\paragraph{Models.} 
+To remain consistent with \cite{pfl-bench}, we use a CNN for FEMNIST, where the hidden size is 2,048. 
+The model consists of two convolutional layers with $5\times 5$ kernels, max pooling, batch normalization, ReLU activation, and two dense layers. 
+For the SST2 data set, the model is a pre-trained BERT-Tiny model from \cite{model-sst2}, which contains 2-layer Transformer encoders with a hidden size of 128.
+Finally, for PUBMED, we utilize the graph isomorphism neural network, GIN \citep{model-pubmed}, which contains 2-layer convolutions with batch normalization, a hidden size of 64, and a dropout rate of 0.5. 
+
+
+\paragraph{Methods.} 
+We compare our proposal with personalized and global-model-based methods (federated learning and meta-learning).
+Since personalized federated learning methods learn individualized models throughout training, requiring additional memory and computation, each of our comparisons will be done after grouping the methods as above.
+For personalized methods, we compare against Ditto~\citep{ditto}, FedBN~\citep{fedbn}, FedEM~\citep{fedem}, and pFedMe~\citep{pfedme}.
+Our single-model-based comparisons consist of FedAvg/Reptile~\citep{fedavg, reptile} and FOMAML~\citep{reptile}.
+
+\paragraph{Hyperparameters.}
+We extend the hyper-parameter optimization techniques given in the original benchmark paper using the grid search provided in Table~\ref{tab: grid}. 
+We conduct the grid searches with hyperband stoping and early termination using \cite{wandb}.
+For FEMNIST, we use a batch size of 32, but PUBMED uses full batch training. 
+The best runs are the top-performing hyperparameters regarding users' average validation split accuracy.
+All methods are fine-tuned using the training split before validation or testing data splits are evaluated. 
+\subfile{../tables/tuning--grid}
+
+\medskip
+Note that for FedDecay, learning rate ($\alpha$) and local decay ($\beta$) are hyperparameters. 
+Although our theory provides evidence when $\eta_t = \alpha_{\lfloor t/K \rfloor} \beta_{(t \bmod K)}$ with decaying $\alpha_j$, we observe solid experimental results with $\alpha$ fixed.
+Furthermore, keeping $\alpha$ fixed allows for a fairer comparison with other methods. 
+Additionally, for FEMNIST and SST, where the local updates consist of several epochs of many mini-batch updates, we apply the decay update to the meta-gradient at the end of each epoch instead of decaying each mini-batch.
+First, mini-batch updates are done with a fixed learning rate.
+Then, the meta-gradient replaces $\nabla F_i(\phi_i^{(n, k)})$ in Equation~\ref{eq: phi}, where $k$ now denotes the $k$-th epoch, with the difference between the model at the start and the end of the epoch divided by the learning rate.
+This can be seen as an approximation to the case in Section~\ref{sec: conv}, where the decaying sequence is piece-wise constant for each epoch. 
+
+
+\subsection{Generalization to New Users}
+\label{sec: unseen}
+
+Let $\Bar{Acc}$, $\Breve{Acc}$, and $\sigma_{Acc}$ denote the equally-weighted average, bottom ten percentile, and standard deviation of test set accuracy.
+Note that for PUBMED, there exist only five total users. 
+Since only a single user is held out to evaluate generalization to new users, PUBMED will not have values for either $\Breve{Acc}$ or $\sigma_{Acc}$ in this section.
+
+\medskip
+We begin by evaluating the ability of methods to perform well for new users. 
+see Table~\ref{tab: metrics--unseen} for metrics. 
+Most importantly, our proposal, FedDecay, produces the top average test accuracy on held-out users of the single-model-based methods for all data sets.
+Furthermore, FedDecay outperforms all SST (text) and PUBMED (graph) comparisons.
+Even on FEMNIST, FedDecay remarkably closes the performance gap between single-model and personalized methods.
+Regarding the personalized federated learning baselines, while FedEM and pFedMe perform well on FEMNIST, there is a noticeable gap in performance on SST. 
+In summary, FedDecay can generalize well to new users across various applications.
+\subfile{../tables/metrics--unseen}
+
+
+\subsection{Performance on Existing Users}
+\label{sec: seen}
+
+It is expected that personalized federated learning methods, which take additional memory and often computation to learn personalized models throughout training, should outperform single model techniques for the users participating in federated learning. 
+See Table~\ref{tab: metrics--seen} for metrics.
+FedDecay produces the top average and bottom ten-percentile test accuracy on existing users of the single-model-based methods for all data sets, including the largest average accuracy of any method on SST.
+Moving on to the personalized federated learning techniques, Ditto and FedBN struggle on SST, pFedME on PUBMED, and FedEM on FEMNIST relative to other personalized federated learning methods.
+Additionally, all methods perform worse than FedDecay on at least one data set, despite additional computation and memory.
+\subfile{../tables/metrics--seen}
+
+
+%
+\section{Summary}
+
+Our proposal is a locally decaying, cyclic learning rate for better balancing initial model success and personalization.
+First, we extend the work of \cite{fedavg-conv} to our learning rate schedule to how our learning rate scheduling impacts the convergence rate under non-independent and non-identically distributed local data sets.
+Then, experimental results across vision, text, and graph benchmark data sets evaluate the effectiveness of our proposal regarding various generalization and fairness metrics.
+This demonstrates that local learning rate scheduling is promising for improving Federated Learning without additional computation or memory cost. 
+
+
+%
+{  
+    \small 
+    \bibliographystyle{apalike}
+    \bibliography{references}
+}
+
+
+%
+\clearpage
+\appendix
+\section{Taylor Analysis - Supplementary Material}
+\label{pf: taylor}
+\subfile{../content/proof--taylor}
+
+\clearpage
+\section{Convergence Analysis - Supplementary Material}
+\subfile{../content/proof--full--convergence}
+
+\end{document}

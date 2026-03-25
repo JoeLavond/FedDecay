@@ -1,0 +1,46 @@
+\edit{
+Federated Learning (FL) enables collaborative model training across distributed data sources without sharing raw data, preserving user privacy~\citep{fed-learn, fed-learn-adv, fed-learn-survey}.
+However, data heterogeneity among users remains a critical challenge, leading to suboptimal global model performance for individual users.
+Various approaches have been proposed to address this, ranging from fine-tuning and meta-learning adaptations to fully personalized federated learning (PFL) techniques.
+}
+
+\edit{
+A simple yet effective strategy for personalization is fine-tuning, where the global model is adjusted using local user data post-training~\citep{ft-is-fine, pfl-bench, pfl}.
+It is necessary to clarify that we consider fine-tuning separate from PFL solutions, as the additional computation and models happen after the federated training is completed.
+While computationally efficient during federated training, fine-tuning assumes access to sufficient local data, and its success largely depends on the quality of the shared initialization. 
+Multiple works have found that FedAvg with fine-tuning typically outperforms more recent meta-learning and PFL methods~\citep{ft-is-fine, benchmark-for-pfl, bridging-pfl}.
+}
+
+\edit{
+Meta-learning methods extend this idea by learning a globally shared model well-suited for rapid personalization~\citep{maml, meta-learning1, meta-learning2, debias-ml}.
+In the context of FL, FOMAML~\citep{maml} and Per-FedAvg~\citep{per-fedavg} have been adapted to optimize a shared initialization that accelerates convergence during fine-tuning.
+In addition to applying conventional meta-learning algorithms to the federated learning context, a variant named Reptile \citep{reptile} can be shown to be equivalent to FedAvg under the condition of equally sized local data sets.
+In this article, we exclusively consider aggregation with equally weighted users. 
+Therefore, we will use the term FedAvg to encompass both FedAvg and Reptile and refer to FedAvg as a meta-learning method.
+Meta-learning approaches often have limitations, including the requirement for additional computation for second-order gradients and the need for fine-tuning for the initialization to perform well. 
+More recent adaptations of meta-learning for FL include FedABML~\citep{fedabml}.
+However, in their experiments, FedABML typically performs around a single percentage point better than FedAvg with fine-tuning. 
+% pFedMe compared against Per-FedAvg
+}
+
+\edit{
+Next, PFL approaches address data diversity by learning personalized models for each user during federated training~\citep{toward-pfl, pfl}.
+Other personalization techniques than meta-learning include clustering~\citep{cluster-plus, cluster-sattler, cluster-briggs}, model mixture~\citep{ditto, cluster-plus, fedem, pfl-fo}, parameter decoupling~\citep{fedbn, pfl-layers, shared-pfl, think-locally}, and knowledge distrillation~\citep{ensemble-distil, fedme, dfml, mutual-fl}.
+These intricate solutions often include learning a distinct model for each user throughout training \citep{ditto}, sharing only a subset of the entire model globally \citep{fedbn}, or treating user data as a mixture of distributions \citep{fedem}.
+In general, PFL methods often require substantial increases in memory and computation to produce and communicate additional models during federated training, which challenges scalability and resource efficiency.
+Furthermore, several prevailing methods may prove restrictive or inequitable for applications accommodating new users.
+For instance, Ditto's approach \citep{ditto} of training personalized models during federated learning becomes infeasible for users who do not participate in training.
+Likewise, FedBN \citep{fedbn} and FedEM \citep{fedem}, which rely on insights from user data, encounter difficulties when new users lack sufficient data for tailoring a model to new users.
+}
+
+\edit{
+Importantly, this work focuses on how including within-round learning rate decay can improve FL performance without significant extra computation or the need for additional models.
+Moreover, unlike the aforementioned meta-learning applications to FL, the learning rate decay can flexibly emphasize initial model performance and rapid personalization.
+We demonstrate that within-round learning rate decay is a generalization of FedAvg or Reptile, making them particularly relevant baselines for comparison. 
+Several other works~\citep{fl-noniid, scaffold, fed-opt} propose to improve the original FedAvg procedure. 
+However, many of these works improve the global optimization step. 
+Unlike our work, they do not consider the local learning rate, especially within the communication round. 
+While we do not propose a PFL method by definition, since fine-tuning occurs after federated training, we include PFL methods in our comparisons to assess the performance gap between our process and PFL techniques.
+More recent PFL solutions exist, like \citet{knn-per}, but comparison with PFL solutions is not the main focus of our work. 
+More importantly, experiments demonstrate consistent improvements compared to FedAvg and FOMAML and close the performance gap with PFL methods with a simple, interpretable learning rate modification without additional computational or memory overheads.
+}

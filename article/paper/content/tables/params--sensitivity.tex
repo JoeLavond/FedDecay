@@ -1,0 +1,45 @@
+\begin{table*}[htbp]
+    \centering
+    \adjustbox{max width=\textwidth}{
+        \begin{tabular}{| lc | cc | cc | cc |}
+        \hline
+             &  & \multicolumn{2}{c|}{FEMNIST (image)} &
+                \multicolumn{2}{c|}{SST2 (text)} &
+                \multicolumn{2}{c|}{PUBMED (graph)} \\
+            Method & $\beta$ & 
+                Existing $\Bar{Acc}$ & New $\Bar{Acc}$ &
+                Existing $\Bar{Acc}$ & New $\Bar{Acc}$ &
+                Existing $\Bar{Acc}$ & New $\Bar{Acc}$ \\
+            \hline
+            FedSGD & 0.0 & 
+                88.51 & 90.55 & 
+                73.60 & 80.30 &
+                86.70 & 79.14 \\
+            FedDecay & 0.2 & 
+                \textbf{89.86} & \textbf{91.52} & 
+                67.01 & 59.02 & 
+                85.67 & 79.68 \\
+            FedDecay & 0.4 & 
+                89.74 & 90.77 & 
+                69.42 & 67.26 & 
+                \textbf{87.22} & \textbf{80.39} \\
+            FedDecay & 0.6 &
+                89.76 & 90.93 & 
+                \textbf{78.15} & \textbf{81.01} & 
+                86.65 & 79.86 \\
+            FedDecay & 0.8 &
+                \multicolumn{2}{c|}{Hyperband Stopped} & 
+                74.64 & 76.14 & 
+                86.59 & 79.32 \\
+            FedAvg & 1.0 &
+                87.91 & 89.78 & 
+                76.54 & 76.80 & 
+                86.29 & 79.50 \\
+            \hline
+        \end{tabular}
+    }
+    \caption{
+        Performance of FedDecay under misspecified values for decay coefficient, $\beta$. 
+    }
+    \label{tab: params--sensitivity}
+\end{table*}

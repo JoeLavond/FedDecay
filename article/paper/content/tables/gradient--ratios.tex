@@ -1,0 +1,30 @@
+\begin{table*}[htbp]
+    \centering
+
+    \begin{adjustbox}{max width = \linewidth}
+        \begin{tabular}{|l|c|c|c|c|c|}
+        \hline
+            Method & FedSGD & \textbf{FedDecay} & FedAvg & FOMAML \\
+            \hline
+            Ratio & 
+                $\dfrac{0}{1}$ &
+                $\dfrac{\left( \beta - \beta^{K} \right) \eta}{1 - \beta^2}$ & 
+                $\dfrac{(K - 1)\eta}{2}$ &
+                $(K - 1)\eta$ \\
+            Limit ($K \rightarrow \infty$) & 
+                0 & 
+                $\dfrac{\beta \eta}{1 - \beta^2}$ &
+                $\infty$ &
+                $\infty$ \\
+            \hline
+        \end{tabular}
+    \end{adjustbox}
+
+    \caption{
+        Ratios of coefficients for AvgGradInner (rapid personalization) to AvgGrad (initial model success) terms for several methods. 
+        Choice of $\beta$ gives FedDecay much greater control over the ratio of emphasis on the ability to personalize vs. initial model success.
+        Note that we are assuming that $\beta \in (0, 1)$ for FedDecay since FedSGD ($\beta = 0$) and FedAvg ($\beta = 1$) are already present.
+    }
+    \label{tab: gradient--ratios}
+    %\vspace{-10pt}
+\end{table*}

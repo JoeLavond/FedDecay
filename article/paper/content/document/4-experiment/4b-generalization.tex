@@ -1,0 +1,26 @@
+\paragraph{Generalization Performance On New Users.}
+To assess the robustness of the methods in accommodating new users, we introduce the following performance metrics: $\Bar{Acc}$ (average accuracy), $\Breve{Acc}$ (bottom ten percentile accuracy), and $\sigma_{Acc}$ (standard deviation of accuracy). 
+Average accuracy is the primary performance metric, and it is desirable to identify methods that often return large values for $\Bar{Acc}$, indicating that the solution performs well for users, on average.
+In addition, we use the fairness metrics $\Breve{Acc}$ and $\sigma_{Acc}$ to understand if solutions are performing well for many users.
+A fair method consistently returns a large bottom ten percentile of accuracy and a low standard deviation, which indicates a lower bound on performance for the 90 percent majority of users and that the solution performs similarly across users.
+Please note that in the PUBMED data set comprising only five users, $\Breve{Acc}$ and $\sigma_{Acc}$ are not applicable due to the limited number of held-out users.
+Additionally, we repeat the single-model-based results across multiple seeds in Appendix~\ref{app: decay-app-seed} to gain insights into result variability and partially assess the sensitivity of our findings to different initial conditions.
+
+We initiate our analysis by investigating the proficiency of each method in catering to new users.
+See Table~\ref{tab: metrics--unseen}
+Our approach, FedDecay, notably outperforms all FL methods in terms of average test accuracy for all data sets.
+Furthermore, even in the FEMNIST data sets, it is worth highlighting that FedDecay significantly narrows the performance gap between FL and PFL methods.
+While personalized methods such as FedEM and pFedMe exhibit competitive results on FEMNIST, their performance drops noticeably in the SST2 data set. These findings underscore FedDecay's exceptional ability to generalize to new users across diverse applications effectively.
+\input{paper/content/tables/metrics--unseen}
+
+\paragraph{Generalization Performance On New Data For Existing Users}
+Turning our attention to the performance of users who participate in the federated learning process, we anticipate that personalized federated learning methods, characterized by additional memory and computation for learning personalized models, should outperform FL.
+The results, presented in Table~\ref{tab: metrics--seen}, affirm this expectation.
+However, among the FL methods, FedDecay emerges as the front-runner, achieving the highest average and bottom ten percentile test accuracy across all data sets.
+Furthermore, FedDecay even secures the highest average accuracy among all methods on the SST2 data set.
+
+Delving into personalized federated learning techniques, we observe mixed results.
+Ditto and FedBN struggle on the SST2 data set, pFedMe faces challenges on PUBMED, and FedEM encounters difficulties on FEMNIST.
+Additionally, it is worth noting that FedDecay consistently outperforms other methods on at least one data set despite their additional computation and memory requirements.
+Please refer to Section~\ref{sec: decay-exp-costs} for a detailed exploration of the cost implications.
+\input{paper/content/tables/metrics--seen}

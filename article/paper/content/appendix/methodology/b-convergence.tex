@@ -1,0 +1,236 @@
+\paragraph{Full User Participation.}
+We expand the theoretical work of \citet{fedavg-conv}.
+Furthermore, we adopt the following additional notations and use their Lemma~\ref{lemma: full-sgd} and Lemma~\ref{lemma: full-variance}.
+Let iteration $t = nK + 1$ denote the $k$-th local update step of communication round $n + 1$ of federated training.
+The $i$-th users model at iteration $t$ is provided by $w_t^i$. 
+Hence, all previous notations can be converted similarly to $w_t^i = \theta_i^{\lfloor t / K \rfloor,\, t \bmod K}$.
+
+Recall that $S \subseteq C$ denotes the set of users participating in the update of the global model for a given round $n$ of federated training.
+Here, $S = C$ and let $p_i$ denote the aggregation weight of the $i$-th user as introduced in Section~\ref{sec: decay-method-decay}.
+We are most interested in assigning equal probability or aggregation weight to all users since our objective is an improved initialization (for all users).
+\begin{align*}
+    & v_{t + 1}^i = w_t^i - \eta_t \nabla \hat F_i(w_t^i, \xi_t^i) \\
+    & w_{t + 1}^i = \begin{cases}
+        v_{t + 1}^i & \textrm{ if } (t + 1) \bmod K \neq 0 \\
+        \sum_{i = 1}^M p_i v_{t + 1}^i & \textrm{ else }
+    \end{cases} 
+\end{align*}
+
+Also, we need to define the following aggregated sequences, which are always equivalent under full user participation.
+Furthermore, shorthand notation for various gradients is used for simplicity.
+Note $\Bar{w}_t$ is only accessible when $t \bmod K = 0$, $\Bar{g}_t = \mathbb{E} g_t$, and $\Bar{v}_{t + 1} = \Bar{w}_t - \eta_t g_t$.
+\begin{align*}
+    & \Bar{v}_t = \sum_{i = 1}^M p_i v_t^i  && g_t = \sum_{i = 1}^M p_i \nabla F_i(w_t^i, \xi_t^i) \\
+    & \Bar{w}_t = \sum_{i = 1}^M p_i w_t^i  && \Bar{g_t} = \sum_{i = 1}^M p_i \nabla F_i(w_t^i)
+\end{align*}
+
+We take the following two lemmas from \citet{fedavg-conv} and adopt the third to our learning rate scheduling.
+\begin{lemma}
+\label{lemma: full-sgd}
+    Assume Assumption \ref{ass: lipschitz} and \ref{ass: convex}. If $\eta_t \leq \frac{1}{4L}$, we have
+    \begin{align*}
+        \mathbb{E} \norm{\Bar{v}_{(t + 1)} - w^*}^2 & \leq \left( 1 - \eta_t \right) \mathbb{E} \norm{\Bar{w}_t - w^*}^2  %\\
+        + \eta_t^2 \mathbb{E} \norm{g_t - \Bar{g}_t}^2 \\
+        & \quad + 2 \mathbb{E} \left[ \sum_{i=1}^M p_i \norm{\Bar{w}_t - w_i^t}^2 \right] + 6 L \eta_t^2 \Gamma
+    \end{align*}
+\end{lemma}
+
+
+\begin{lemma}
+\label{lemma: full-variance}
+    Under Assumption~\ref{ass: grad-var}, it follows that
+    \begin{align*}
+        \mathbb{E} \norm{g_t - \Bar{g}_t}^2 \leq \sum_{i = 1}^M p_i^2 \sigma_i^2
+    \end{align*}
+\end{lemma}
+
+
+\begin{lemma}
+\label{lemma: full-divergence}
+    Under Assumption~\ref{ass: grad-norm}, a locally decaying, cyclic learning rate of the form $\eta_t = \alpha_{\lfloor t/K \rfloor} \beta_{t \bmod K}$ such that $\beta_{t + 1} \leq \beta_t$ for $t = 0, \ldots, K - 1$ satisfies
+    \begin{align*}
+        E \left[ \sum_{i = 1}^M p_i \norm{\Bar{w}_t - w_t^i}^2 \right] \leq \eta_t^2 \left( G (K - 1) \beta_{K - 1}^{-1}  \right)^2 
+    \end{align*}
+\end{lemma}
+%
+\begin{proof}
+    Note that for all $t \geq 0$ there exists $t_0 \leq t$ such that $t - t_0 \leq K - 1$ and $w_{t_0}^i = \Bar{w}_{t_0}$ for all $i \in \left[1, \ldots, M \right]$
+    \begin{align*}
+        \allowdisplaybreaks
+        & \mathbb{E} \left[ \sum_{i = 1}^M p_i \norm{\Bar{w}_t - w_t^i}^2 \right] \\
+        & = \mathbb{E} \left[ \sum_{i = 1}^M p_i \norm{\left( w_t^i - \Bar{w}_{t_0} \right) - \left( \Bar{w}_t - \Bar{w}_{t_0} \right)}^2 \right] \\
+        & \leq \mathbb{E} \left[ \sum_{i = 1}^M p_i \norm{\left( w_t^i - \Bar{w}_{t_0} \right)}^2 \right] \\
+        & \textrm{ as } \mathbb{E}\norm{X - \mathbb{E}X} \leq \mathbb{E}\norm{X}^2 \textrm{ where } X = w_t^i - \Bar{w}_{t_0} \\
+        & \leq \sum_{i = 1}^M p_i \mathbb{E} \left[ (K - 1) \sum_{i = t_0}^{t - 1} \eta_t^2 \norm{\nabla \hat F_i \left( w_t^i, \xi_t^i \right)}^2 \right] \\
+        & \textrm{ as } \norm{\sum_{i = t_0}^{t - 1} \eta_t \nabla \hat F_i \left( w_t^i, \xi_t^i \right)}^2 %\\
+        \quad \leq (t - t_0) \sum_{i = t_0}^{t - 1} \eta_t^2 \norm{\nabla \hat F_i \left( w_t^i, \xi_t^i \right)}^2 \\
+        & \leq (K - 1) \sum_{i = 1}^M p_i \sum_{i = t_0}^{t - 1} \eta_{t_0}^2 G^2 \\
+        & \textrm{ as } \mathbb{E} \norm{\nabla \hat F_i \left( w_t^i, \xi_t^i \right)}^2 \leq G^2 %\\
+        \textrm{ and } \eta_t \leq \eta_{t_0} \textrm{ for } t_0 \leq t \leq t_0 + K \\
+        & \leq (K - 1) \sum_{i = 1}^M p_i \sum_{i = t_0}^{t - 1} \left( \dfrac{G \beta_0}{\beta_{K - 1}} \right)^2 \\
+        & \textrm{ as } \eta_{t_0} \leq \eta_t \left( \dfrac{\beta_0}{\beta_{K - 1}}\right) \textrm{ for } t_0 \leq t \leq t_0 + K \\
+        & \leq \eta_t^2 \left( G (K - 1) \beta_0 \beta_{K - 1}^{-1}  \right)^2 \textrm{ as } \sum_{i = 1}^M p_i = 1
+    \end{align*}
+\end{proof}
+
+
+The following proves convergence under full user participation $S_\cdot = C$.
+\begin{proof}
+\label{pf: full}
+
+    Recall that for all $t$, under full user participation $\Bar{w}_t = \Bar{v}_t$. Let $\Delta_t = \mathbb{E} \norm{\Bar{w}_t - w^*}^2$. From Lemma \ref{lemma: full-sgd}, \ref{lemma: full-variance}, and \ref{lemma: full-divergence}, it follows that
+    \begin{align*}
+        & \Delta_{t + 1} \leq \left( 1 - \eta_t \mu \right) \Delta_t + \eta_t^2 B \\
+        & \textrm{ where } B = \sum_{i = 1}^M p_i^2 \sigma_i^2 + 6 L \Gamma + 2 \left( G (K - 1) \beta_0 \beta_{K - 1}^{-1} \right)^2
+    \end{align*}
+    
+    We can assume without loss of generality that $\beta_{t \bmod K} \leq 1$ and $\beta_0 = 1$. Otherwise 
+    \begin{align*}
+        \eta_t = \alpha_{\lfloor t/K \rfloor} \beta_{t \bmod K} = \Tilde{\alpha}_{\lfloor t/K \rfloor} \Tilde{\beta}_{t \bmod K}
+    \end{align*} 
+    where $\Tilde{\alpha}_t = \beta_0 \left( \frac{c}{t + d} \right)$ and $\Tilde{\beta}_t = \frac{\beta_t}{\beta_0} \leq 1$. Additionally, we can assume that all $\beta$'s are positive-valued as we could reduce $K$ until this is satisfied.
+    
+    For $\eta_t = \alpha_{\lfloor t/K \rfloor} \beta_{t \bmod K}$ where $\alpha_t = \frac{c}{t + d}$ for some $c > \frac{2}{\mu \beta_{K - 1}}$ and $d > 2 - \frac{1}{K}$ such that $\eta_1 \leq \frac{1}{4L}$. 
+    \begin{align*}
+        & \dfrac{c}{(t/K) + d} \leq \alpha_{\lfloor t/K \rfloor} \leq \dfrac{c}{(t/K) + d - 1} \\
+        & \Rightarrow \dfrac{c \beta_{K - 1}}{(t/K) + d} \leq \eta_t \leq \dfrac{c}{(t/K) + d - 1} \\
+        & \textrm{ as } \beta_{K - 1} \leq \beta_{t \bmod K} \leq 1 
+    \end{align*}
+    
+    By induction, we prove ${\Delta_t \leq \dfrac{v}{(t/K) + d - 2}}$ where 
+    \begin{align*}
+        v = \max \left\{ \dfrac{c^2 B}{\beta_{K - 1} c \mu - 2}, \left[ (1/K) + d - 2 \right] \Delta_1 \right\}
+    \end{align*}
+    Note that $t = 1$ holds trivially by the definition of $v$. Assuming the conclusion holds for some $t$, then
+    \begin{align*}
+        \allowdisplaybreaks
+        & \Delta_{t + 1} \leq \left( 1 - \eta_t \mu \right) \Delta_t + \eta_t^2 B \\
+        & \leq \left( 1 - \dfrac{\beta_{K - 1} c \mu}{(t/K) + d} \right) \left( \dfrac{v}{(t/K) + d - 2} \right) %\\
+        %& \quad 
+        + \left( \dfrac{c}{(t/K) + d - 1}\right)^2 B \\
+        %& \qquad 
+        & \textrm{ by the induction hypothesis, } %\\
+        %& \qquad 
+        1 - \eta_t \mu \leq 1 - \dfrac{\beta_{K - 1} c \mu}{(t/K) + d}, \\
+        & \qquad \textrm{ and } \eta_t \leq \left( \dfrac{c}{(t/K) + d - 1} \right) \\
+        & \leq \left( 1 - \dfrac{\beta_{K - 1} c \mu}{(t/K) + d} \right) \left( \dfrac{v}{(t/K) + d - 2} \right) %\\
+        %& \quad 
+        + \dfrac{c^2B}{\left[ (t/K) + d \right] \left[ (t/K) + d - 2 \right]} \\
+        & \qquad \textrm{ as } (t/K) + d - 2 > (1/K) + 2 - (1/K) - 2 = 0 \\
+        & \qquad \Rightarrow \left[ (t/K) + d \right] \left[ (t/K) + d - 2 \right] \leq \left[ (t/K) + d - 1 \right]
+    \end{align*}
+
+    Letting $a = \dfrac{1}{\left[ (t/K) + d \right] \left[ (t/K) + d - 2 \right]}$, we continue with the previous quantity. 
+    \begin{align*}
+        \allowdisplaybreaks
+        & = a \left( \left[(t/K) + d - 2\right]v + c^2B - \left[ c \mu \beta_{K - 1} - 2 \right]v \right) \\
+        & \leq a \Big( \left[(t/K) + d - 2\right]v + c^2B %\\
+        %& \qquad 
+        - \left[ c \mu \beta_{K - 1} - 2 \right] \left[ \dfrac{c^2 B}{\beta_{K - 1} c \mu} \right] \Big) \\
+        & \qquad \textrm{ as } \beta_{K - 1} c \mu - 2 > 0 \textrm{ and } v \leq \dfrac{c^2 B}{\beta_{K - 1} c \mu}\\
+        & = \dfrac{ \left[(t/K) + d - 2\right]v }{\left[ (t/K) + d \right] \left[ (t/K) + d - 2 \right]} \\
+        & = \dfrac{v}{(t/K) + d} \\
+        & \leq \dfrac{v}{(t/K) + d} \left( \dfrac{(t/K) + d}{(t/K) + d - \left(2 + \frac{1}{K} \right) } \right) \\
+        & = \dfrac{v}{(t/K) + d - \left(2 + \frac{1}{K} \right)} \\
+        & = \dfrac{v}{\left(\frac{t + 1}{K} \right) + d - 2}
+    \end{align*}
+    
+    Then by $L$-smoothness of $F(\cdot)$
+    \begin{align*}
+        & \mathbb{E} \left[ F(\Bar{w}_t) - F^* \right] \leq \dfrac{L}{2} \Delta_t \leq \dfrac{L}{2} \left( \dfrac{v}{(t/K) + d - 2} \right)
+    \end{align*}
+    
+    Specifically, if we choose the constants to be set as: \\
+    $c = \dfrac{3}{\mu \beta_{K - 1} - 2}$ and $d = \max \left\{ \dfrac{12L}{\mu \beta_{K - 1}}, 4 - \dfrac{2}{K}\right\}$ then,
+    \begin{align*}
+        \allowdisplaybreaks
+        & \alpha_1 = \dfrac{c}{d + 1} < \dfrac{c}{d} = \dfrac{3}{\mu \beta_{K - 1} d} \leq \dfrac{3}{12L + \mu \beta_{K - 1}} \leq \dfrac{1}{4L} \\
+        & \qquad \textrm{ as } d \geq \dfrac{12L}{\mu \beta_{K - 1}} \\
+        & v = \max \left\{ \dfrac{c^2 B}{\beta_{K - 1} c \mu - 2}, \left[ (1/K) + d - 2 \right] \Delta_1 \right\} \\
+        & \leq \dfrac{c^2 B}{\beta_{K - 1} c \mu - 2} + \left[ (1/K) + d - 2 \right] \Delta_1 \\
+        & = c^2 B + \left[ (1/K) + d - 2 \right] \Delta_1 \\
+        & \qquad \textrm{ as } c = \dfrac{3}{\mu \beta_{K - 1}} \\
+        & = \left( \dfrac{3}{\mu \beta_{K - 1}} \right)^2 B + \left[ (1/K) + d - 2 \right] \Delta_1 \\
+        & = \dfrac{2}{\mu} \left( \dfrac{9B}{2 \mu \beta_{K - 1}^2} + \dfrac{(1/K) + d - 2}{2} \Delta_1 \right) \\
+        & \mathbb{E} \left[ F(\Bar{w}_t) - F^* \right] \leq \dfrac{L}{2} \left( \dfrac{v}{(t/K) + d - 2} \right) \\
+        & \quad \leq \dfrac{\kappa}{(t/K) + d - 2} \left( \dfrac{9B}{2 \mu \beta_{K - 1}^2} + \dfrac{(1/K) + d - 2}{2} \Delta_1 \right)
+    \end{align*}
+\end{proof}
+
+
+\paragraph{Partial User Participation.}
+Here, we focus on the case where the random set of users at iteration $t$ ($S_t$) of size $\lvert S \rvert$ is selected to update the global model.
+Consider when the central server forms $S_\cdot$ by sampling uniformly without replacement.
+We modify the definition of $w_t$ to incorporate the new averaging scheme.
+\begin{align*}
+    & w_{t + 1}^i = \begin{cases}
+        v_{t + 1}^i & \textrm{ if } (t + 1) \bmod K \neq 0 \\
+        \sum_{i \in S_{t + 1}} p_i \frac{M}{\lvert S \rvert} v_{t + 1}^i & \textrm{ else }
+    \end{cases} 
+\end{align*}
+
+We rely on the following previous work by \citet{fedavg-conv}.
+\begin{lemma}
+    \label{lemma: sampling-unbiased}
+    If $t + 1 \bmod K = 0$ and $S_\cdot$ is sampled uniformly without replacement, then 
+    \begin{align*}
+        \mathbb{E}_{S_t} \left( \Bar{v}_{t + 1} \right) = \Bar{v}_{t + 1}
+    \end{align*}
+\end{lemma}
+
+\begin{lemma}
+    \label{lemma: sampling-variance}
+    If $t + 1 \bmod K = 0$, $S_\cdot$ is sampled uniformly without replacement, $p_i = \frac{1}{n}$ for all $i \in \left[1, \ldots, M \right]$, and $\eta_t = \alpha_{\lfloor t/K \rfloor} \beta_{t \bmod K}$ where both $\alpha_j$ and $\beta_j$ are non-increasing, then 
+    \begin{align*}
+        & \mathbb{E}_{S_t} \norm{\Bar{v}_{t + 1} - \Bar{w}_{t + 1}}^2 %\\
+        %& \quad 
+        \leq \eta_t^2 \left( \dfrac{M - \lvert S_t \rvert}{K (M - 1)} \right) \left(G K \beta_{0} \beta_{K - 1} \right)^2
+    \end{align*}
+\end{lemma}
+\begin{proof}
+    Replace $\eta_{t_0} \leq 2 \eta_t$ with $\eta_{t_0} \leq \eta_t \left( \frac{\beta_{0}}{\beta_{K - 1}}\right)$ in the original proof.
+\end{proof}
+
+The following proves convergence under partial user participation in updating the global model.
+This proof completes Theorem~\ref{thm: conv}.
+\begin{proof}
+    \label{pf: partial}
+    
+    \begin{align*}
+    \allowdisplaybreaks
+        & \mathbb{E}_{S_{t + 1}} \norm{\Bar{w}_{t + 1} - w^*}^2 \\
+        & \quad = \mathbb{E}_{S_{t + 1}} \norm{\Bar{w}_{t + 1} - \Bar{v}_{t + 1} + \Bar{v}_{t + 1} - w^*}^2 \\
+        & \quad = \mathbb{E}_{S_{t + 1}} \norm{\Bar{w}_{t + 1} - \Bar{v}_{t + 1}}^2 \\
+        & \qquad + \mathbb{E}_{S_{t + 1}} \norm{\Bar{v}_{t + 1} - w^*}^2 %\\
+        %& \qquad 
+        + 2 \mathbb{E}_{S_{t + 1}} \langle \Bar{w}_{t + 1} - \Bar{v}_{t + 1}, \Bar{v}_{t + 1} - w^* \rangle \\
+        & \quad = \mathbb{E}_{S_{t + 1}} \norm{\Bar{w}_{t + 1} - \Bar{v}_{t + 1}}^2 + \mathbb{E}_{S_{t + 1}} \norm{\Bar{v}_{t + 1} - w^*}^2 \\
+    \end{align*}
+    The last equality follows from Lemma~\ref{lemma: sampling-unbiased}. Next, by Lemma~\ref{lemma: sampling-variance}, we have
+    \begin{align*}
+    \allowdisplaybreaks
+        & \mathbb{E} \norm{\Bar{w}_{t + 1} - w^*}^2 %\\
+        %& \quad 
+        \leq \begin{cases}
+            (1 - \eta_t \mu) \mathbb{E} \norm{\Bar{w}_{t} - w^*}^2 + \eta_t B \\
+            \quad \textrm{ if } t + 1 \bmod K \neq 0 \\
+            (1 - \eta_t \mu) \mathbb{E} \norm{\Bar{w}_{t} - w^*}^2 + \eta_t (B + D) \\
+            \quad \textrm{ if } t + 1 \bmod K = 0 \\
+        \end{cases}
+    \end{align*}
+    Furthermore, the second bound holds for all $t$ since $D > 0$. Next, similar to our proof under full user participation:
+    \begin{itemize}
+        \item Assume without loss of generality that $\beta_{t \bmod K} \leq 1$ and $\beta_{0} = 1$.
+        \item $\eta_t = \alpha_{\lfloor t/K \rfloor} \beta_{t \mod K}$ where $\alpha_j = \frac{c}{t + d}$ for some $c > \frac{2}{\mu \beta_{K - 1}}$ and $d > 2 - \frac{1}{K}$.
+    \end{itemize}
+    
+    Then $\Delta_t \leq \dfrac{v}{(t/K) + d - 2}$ %\\
+    where $v = \max \left\{ \dfrac{c^2(B + D)}{\beta_{K - 1} c \mu - 2}, \left[ (1/K) + d - 2 \right] \Delta_1 \right\}$. \\
+    Hence $\mathbb{E} \left[ F(\Bar{w}_t) \right] - F^* \leq \dfrac{L}{2}\Delta_t \leq \dfrac{L}{2} \left( \dfrac{v}{(t/K) + d - 2} \right)$. \\
+    With $c = \dfrac{3}{\mu \beta_{K - 1}}$ and $d = \max \left\{ \dfrac{12 L}{\mu \beta_{K - 1}}, 4 - \dfrac{2}{K} \right\}$, 
+    \begin{align*}
+        \mathbb{E} \left[ F(\Bar{w}_t) - F^* \right] & \leq \dfrac{\kappa}{(t/K) + d - 2} \Big( %\\
+        %& \quad 
+        \dfrac{9(B + D)}{2\mu \beta_{K - 1}^2} + \left( \dfrac{(1/K) + d - 2}{2} \right) \Delta_1 \Big)
+    \end{align*}
+\end{proof}

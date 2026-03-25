@@ -1,0 +1,39 @@
+\begin{table*}[h]
+    \resizebox{\textwidth}{!}{
+        \begin{tabular}{|l|rrr|rrr|}
+        \hline
+            Method & 
+                Local Epochs ($K$) & Batch Size & Learning Rate ($\alpha$) & 
+                Regularization Rate &  Meta-learning Steps &  Local Decay ($\beta$) \\
+        \hline
+            Ditto & 
+                1 & - & 0.005 &
+                0.1 & - & - \\
+            FedBN & 
+                3 & - & 0.005 & 
+                - & - & - \\
+            FedEM & 
+                3 & - & 0.500 & 
+                - & - & - \\
+            pFedMe & 
+                3 & - & 0.500 &
+                0.5 & 1.0 & - \\
+        \hline
+            FOMAML & 
+                3 & - & 0.500 & 
+                - & - & - \\
+            FedAvg & 
+                1 & - & 0.500 & 
+                - & - & - \\
+            FedDecay - Exponential & 
+                3 & - & 0.500 & 
+                - & - & 0.4 \\
+            FedDecay - Linear & 
+                3 & - & 0.500 & 
+                - & - & 0.4 \\
+        \hline
+        \end{tabular}
+    }
+    \caption{Main experiment hyper-parameters for all methods after tuning on PUBMED}
+    \label{tab: params--pubmed}
+\end{table*}

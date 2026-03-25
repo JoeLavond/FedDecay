@@ -1,0 +1,41 @@
+\begin{table*}[h]
+    \resizebox{\textwidth}{!}{
+        \begin{tabular}{|l|rrr|rrr|}
+        \hline
+            Method & 
+                Local Epochs ($K$) & Batch Size & Learning Rate ($\alpha$) & 
+                Regularization Rate &  Meta-learning Steps &  Local Decay ($\beta$) \\
+        \hline
+            Ditto & 
+                3 & - & 0.10 & 
+                0.50 & - & - \\
+            FedBN & 
+                3 & - & 0.01 & 
+                - & - & - \\
+            FedEM & 
+                3 & - & 0.10 & 
+                - & - & - \\
+            pFedMe & 
+                3 & - & 0.50 & 
+                0.05 & 3.0 & - \\
+        \hline
+            FOMAML & 
+                3 & - & 0.50 & 
+                - & - & - \\
+            FedAvg & 
+                1 & - & 0.10 & 
+                - & - & - \\
+            FedDecay - Exponential & 
+                3 & - & 0.05 & 
+                - & - & 0.2 \\
+                % 3 & - & 0.10 & 
+                % - & - & 0.2 \\
+            FedDecay - Linear & 
+                3 & - & 0.10 & 
+                - & - & 0.6 \\
+        \hline
+        \end{tabular}
+    }
+    \caption{Main experiment hyper-parameters for all methods after tuning on FEMNIST}
+    \label{tab: params--femnist}
+\end{table*}

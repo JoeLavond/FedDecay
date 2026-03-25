@@ -1,0 +1,142 @@
+\documentclass[twoside, 11pt]{article}
+\usepackage{paper/source/jmlr2e}
+
+% {volume}{year}{pages}{date submitted m/dd}{date published m/dd}{paper id ##-####}{author-full-names}
+\usepackage{lastpage}
+\jmlrheading{volume}{year}{1 - \pageref{LastPage}}{date submitted}{date published}{paper id}{author full names}
+
+% {running head}{author last names}
+\ShortHeadings{FedDecay}{Lavond, Cheng, and Li}
+\firstpageno{1}
+
+% extra packages 
+\usepackage{amsmath, amssymb, amsfonts, mathtools, color, xcolor}
+\newtheorem{assumption}{Assumption}
+\newcommand\abs[1]{\left\lvert#1\right\rvert}
+\newcommand\norm[1]{\left\lVert#1\right\rVert}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\usepackage{graphicx}
+\usepackage{adjustbox}
+\usepackage{wrapfig}
+
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{enumitem}
+\usepackage{multirow}
+\usepackage{rotating}
+
+\newcommand{\yli}[1]{\textcolor{red}{#1}}
+\newcommand{\cmh}[1]{\textcolor{orange}{\scriptsize Minhao: #1}}
+
+\begin{document}
+
+    \title{FedDecay: Adapting to Data Heterogeneity in Federated Learning with Within-Round Learning Rate Decay}
+    \author{
+        \name Joseph Lavond \email jlavond@email.unc.edu \\
+        \addr Department of Statistics and Operations Research \\
+            University of North Carolina at Chapel Hill \\
+            Chapel Hill, NC 27514, USA \\
+        \AND
+        \name Minhao Cheng \email mmc7149@psu.edu \\
+        \addr College of Information Sciences and Technology \\
+            The Pennsylvania State University \\
+            State College, PA 16801, USA \\
+        \AND
+        \name Yao Li \email yaoli@email.unc.edu \\
+        \addr Department of Statistics and Operations Research \\
+            University of North Carolina at Chapel Hill \\
+            Chapel Hill, NC 27514, USA \\
+    }
+    \editor{editor}
+
+    \maketitle
+    
+    \begin{abstract}%
+        Federated learning (FL) is a powerful technique for collaboratively training a single centralized model on distributed local data sources. 
+        By aggregating model information without disclosing the local training data, FL preserves data privacy.
+        However, the inherent heterogeneity in local data sets challenges the performance of FL techniques, especially when data is very diverse across local sources.
+        Personalized Federated Learning (PFL) can mitigate this challenge using multiple models but often requires additional memory and computation.
+        This work does not propose a new PFL method but introduces a novel FL method, FedDecay, which incorporates learning rate decay within each training round.
+        This method balances model performance across all local data sets and performance on local data after fine-tuning.
+        We provide both theoretical insights and empirical evidence of FedDecay's efficacy across diverse domains, including vision, text, and graph data.
+        Our extensive experiments demonstrate that FedDecay outperforms other FL methods for generalization to new data for both new and existing users.
+        Moreover, it performs comparably to PFL methods, particularly regarding new users, while maintaining similar computation and memory requirements as FL techniques.
+    \end{abstract}
+    \begin{keywords}
+        Federated Learning, Meta-Learning, Data Heterogeneity, Personalized Federated Learning
+    \end{keywords}
+    
+    \section{Introduction}
+    \label{sec: decay-intro}
+    \input{paper/content/document/1-introduction}
+    
+    \section{Related Work}
+    \label{sec: decay-related}
+    \input{paper/content/document/2-background}
+
+    \section{Methodology}
+    \label{sec: decay-method}
+    \input{paper/content/document/3-methodology/3a-introduction}
+
+        \subsection{Global and Local Updates for Federated Learning}
+        \label{sec: decay-method-updates}
+        \input{paper/content/document/3-methodology/3b-updates}
+        
+        \subsection{FedDecay: Generalizing Local Updates With Gradient Decay} 
+        \label{sec: decay-method-decay}
+        \input{paper/content/document/3-methodology/3c-decay}
+
+    \section{Experimental Results}
+    \label{sec: decay-exp}
+    \input{paper/content/document/4-experiment/4a-setting}
+
+        \subsection{Generalization to New and Existing Users}
+        \label{sec: decay-exp-gen}
+        \input{paper/content/document/4-experiment/4b-generalization}
+
+        \subsection{Computational and Memory Costs}
+        \label{sec: decay-exp-costs}
+        \input{paper/content/document/4-experiment/4c-costs}
+
+    \section{Concluding Remarks}
+    \label{decay-conclusion}
+    \input{paper/content/document/5-conclusion}
+
+
+    \clearpage
+    \bibliography{paper/references}
+
+    \clearpage
+    \appendix
+
+    \section{Supplementary Proofs}
+
+        \subsection{Balancing Initial Model Success and Rapid Personalization}
+        \label{pf: decay-pf-taylor}
+        \input{paper/content/appendix/methodology/a-taylor}
+
+        \subsection{Convergence of FedDecay on Heterogenous Data}
+        \label{pf: decay-pf-conv}
+        \input{paper/content/appendix/methodology/b-convergence}
+
+    \section{Supplementary Results}
+
+        \subsection{Sensitivity Analysis of FedDecay}
+        \label{app: decay-app-sens}
+        \input{paper/content/appendix/experiment/a-sensitivity}
+
+        \subsection{Linear Within-Round Learning Rate Decay}
+        \label{app: decay-app-scheme}
+        \input{paper/content/appendix/experiment/b-linear}
+
+        \subsection{Robustness of FedDecay to Choice of Seed}
+        \label{app: decay-app-seed}
+        \input{paper/content/appendix/experiment/c-seed}
+
+        \subsection{Method Hyper-parameters After Tuning}
+        \label{app: decay-app-params}
+        \input{paper/content/appendix/experiment/d-hyperparameters}
+
+\end{document}

@@ -1,0 +1,174 @@
+\documentclass[12pt]{article}
+\input{paper/source/math_commands}
+
+% custom
+\usepackage{url}
+\usepackage{adjustbox}
+\usepackage{multirow}
+\usepackage{hyperref}
+
+\usepackage{amsthm}
+\newtheorem{assumption}{Assumption}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newcommand\abs[1]{\left\lvert#1\right\rvert}
+\newcommand\norm[1]{\left\lVert#1\right\rVert}
+
+\usepackage{xcolor}
+\newcommand\edit[1]{#1}
+
+\usepackage{natbib}
+\bibliographystyle{plainnat}
+
+%\pdfminorversion=4
+% NOTE: To produce blinded version, replace "0" with "1" below.
+\newcommand{\blind}{0}
+
+% DON'T change margins - should be 1 inch all around.
+\addtolength{\oddsidemargin}{-.5in}%
+\addtolength{\evensidemargin}{-1in}%
+\addtolength{\textwidth}{1in}%
+\addtolength{\textheight}{1.7in}%
+\addtolength{\topmargin}{-1in}%
+
+\begin{document}
+
+%\bibliographystyle{natbib}
+
+\def\spacingset#1{\renewcommand{\baselinestretch}%
+{#1}\small\normalsize} \spacingset{1}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\if0\blind
+{
+  \title{\bf FedDecay: Balancing Model Performance and Rapid Personalization in Federated Learning with Learning Rate Scheduling}
+  \author{
+    Joseph Lavond \\
+    Department of Statistics and Operations Research, \\ 
+    University of North Carolina at Chapel Hill \\
+    and \\
+    Minhao Cheng \\
+    College of Information Sciences and Technology, \\
+    The Pennsylvania State University \\    
+    and \\
+    Yao Li \\
+    Department of Statistics and Operations Research, \\
+    University of North Carolina at Chapel Hill \\
+    }
+  \maketitle
+} \fi
+
+\if1\blind
+{
+  \bigskip
+  \bigskip
+  \bigskip
+  \begin{center}
+    {\LARGE\bf FedDecay: Balancing Model Performance and Rapid Personalization in Federated Learning with Learning Rate Scheduling}
+\end{center}
+  \medskip
+} \fi
+
+\bigskip
+    \begin{abstract}%
+        Federated learning (FL) is a powerful technique for collaboratively training a single centralized model on distributed local data sources.  By aggregating model information without disclosing the local training data, FL preserves data privacy. However, the inherent heterogeneity in local data sets challenges the performance of FL techniques, especially when data is very diverse across local sources. Personalized Federated Learning (PFL) can mitigate this challenge using multiple models but often requires additional memory and computation. This work does not propose a new PFL method but instead explores how learning rate decay within each local training round can improve model performance across local data sets after fine-tuning. We provide theoretical insights and empirical evidence of efficacy across diverse domains, including vision, text, and graph data. Our extensive experiments demonstrate that learning rate scheduling alone outperforms other FL methods regarding generalization to new data for both new and existing users. Moreover, it performs comparably to PFL methods, particularly for new users, while maintaining similar computational and memory requirements as FL techniques.
+    \end{abstract}
+    
+\noindent%
+{\it Keywords:} Deep learning, Federated learning, Meta-learning, Neural network.
+\vfill
+
+\newpage
+\spacingset{1.75} % DON'T change the spacing!
+    \section{Introduction}
+    \label{sec: decay-intro}
+    \input{paper/content/document/1-introduction}
+    
+    \section{Related Work}
+    \label{sec: decay-related}
+    \input{paper/content/document/2-background}
+
+    \section{Methodology}
+    \label{sec: decay-method}
+
+        \subsection{Problem Setup}
+        \input{paper/content/document/3-methodology/3a-introduction}
+
+        \subsection{Global and Local Updates for Federated Learning}
+        \label{sec: decay-method-updates}
+        \input{paper/content/document/3-methodology/3b-updates}
+        
+        \subsection{FedDecay: Generalizing Local Updates With Gradient Decay} 
+        \label{sec: decay-method-decay}
+        \input{paper/content/document/3-methodology/3c-decay}
+
+    \section{Experimental Results}
+    \label{sec: decay-exp}
+    \input{paper/content/document/4-experiment/4a-setting}
+
+        \subsection{Generalization to New and Existing Users}
+        \label{sec: decay-exp-gen}
+        \input{paper/content/document/4-experiment/4b-generalization}
+
+        \subsection{Computational and Memory Costs}
+        \label{sec: decay-exp-costs}
+        \input{paper/content/document/4-experiment/4c-costs}
+
+    \section{Concluding Remarks}
+    \label{decay-conclusion}
+    \input{paper/content/document/5-conclusion}
+
+
+% \bigskip
+% \begin{center}
+% {\large\bf SUPPLEMENTARY MATERIAL}
+% \end{center}
+
+% \begin{description}
+
+% \item[Title:] Brief description. (file type)
+
+% \item[R-package for  MYNEW routine:] R-package ÒMYNEWÓ containing code to perform the diagnostic methods described in the article. The package also contains all datasets used as examples in the article. (GNU zipped tar file)
+
+% \item[HIV data set:] Data set used in the illustration of MYNEW method in Section~ 3.2. (.txt file)
+
+% \end{description}
+
+% \section{BibTeX}
+
+% We hope you've chosen to use BibTeX!\ If you have, please feel free to use the package natbib with any bibliography style you're comfortable with. The .bst file Chicago was used here, and agsm.bst has been included here for your convenience. 
+
+    \bibliography{paper/references}
+    \appendix
+
+    \section{Supplementary Proofs}
+
+        \subsection{Balancing Initial Model Success and Rapid Personalization}
+        \label{pf: decay-pf-taylor}
+        \input{paper/content/appendix/methodology/a-taylor}
+
+        \subsection{Convergence of FedDecay on Heterogenous Data}
+        \label{pf: decay-pf-conv}
+        \input{paper/content/appendix/methodology/b-convergence}
+
+    \section{Supplementary Results}
+
+        \subsection{Sensitivity Analysis of FedDecay}
+        \label{app: decay-app-sens}
+        \input{paper/content/appendix/experiment/a-sensitivity}
+
+        \subsection{Linear Within-Round Learning Rate Decay}
+        \label{app: decay-app-scheme}
+        \input{paper/content/appendix/experiment/b-linear}
+
+        \subsection{Robustness of FedDecay to Choice of Seed}
+        \label{app: decay-app-seed}
+        \input{paper/content/appendix/experiment/c-seed}
+
+        \subsection{Method Hyper-parameters After Tuning}
+        \label{app: decay-app-params}
+        \input{paper/content/appendix/experiment/d-hyperparameters}
+
+\end{document}

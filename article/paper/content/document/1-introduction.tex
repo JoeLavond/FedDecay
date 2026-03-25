@@ -1,0 +1,38 @@
+Federated Learning (FL) is a compelling solution for constructing a shared (global) model from several local data sources that inherently cannot be exchanged or aggregated~\citep{fed-learn, fed-learn-adv, fed-learn-survey, fed-learn-survey2, fed-learn-survey3, learnings-fl}.
+Learning without sharing data becomes crucial when data privacy or security is paramount, like healthcare applications~\citep{fed-learn-app, fed-learn-health, fl-med-gan}. 
+FL operates through an iterative procedure involving rounds of model improvement.
+These rounds start with distributing the current global model to local entities (users) and selecting participants to contribute to the model update.
+The chosen users participate by training their local copies of the model using their respective data and returning the updated model.
+Next, aggregation of the returned models produces a new global model.
+The described process represents the typical procedure for FL solutions, which learns only one shared model for all users.
+The most widely embraced FL method is FedAvg~\citep{fedavg}, which computes the new global model as the parameter-wise average of returned local models.
+
+When users have similar data, a single model can perform well.
+However, when local data are very diverse, ensuring good performance across users with a single shared global model can be challenging \citep{single-model-problems, single-model-problems2}. 
+Recent works \citep{pfl-bench, pfl} argue that alternatively, the focus should be on Personalized Federated Learning (PFL) methods that output models tailored to the local data.
+However, learning additional models can require extra memory and computation, and managing multiple models in PFL may lead to heightened communication requirements between users, which can be a bottleneck in real-world applications.
+We desire a method that can perform well with heterogeneous user data and has a computational cost similar to FL techniques.
+
+\edit{
+Next, meta-learning has been successfully applied to PFL to address the challenge of diverse user data without requiring additional models during training.
+Instead of learning multiple models during the federated training process, meta-learning methods focus on producing a shared model that can quickly adapt to local datasets through fine-tuning.
+This approach significantly reduces the computational and memory overhead associated with PFL methods.
+Building on the foundational work by~\citet{reptile}, which demonstrated that meta-learning solutions inherently emphasize varying \textbf{fixed} balances between initial model success (shared model performance on local datasets) and rapid personalization (personalized model performance after fine-tuning), we propose an enhancement tailored for FL applications.
+While traditional meta-learning prioritizes adaptation across a wide distribution of tasks, the context of FL involves a more constrained task distribution: the users' local datasets. 
+Due to this domain-specific constraint, focusing more on initial model success can lead to more prominent personalized model performance after fine-tuning. 
+We leverage within-round learning rate decay to balance initial model performance and rapid personalization \textbf{flexibly}. 
+By adjusting the decay hyperparameter, our method enables application-specific emphasis, providing a customizable approach to optimize performance for varying levels of data heterogeneity.
+Crucially, this modification generalizes the widely used FedAvg algorithm~\citep{fedavg}, maintaining its computational simplicity and convergence rate~\citep{fedavg-conv}, requiring no additional gradients or models to be computed or stored.
+In Section~\ref{sec: decay-method-decay}, we mathematically justify how this flexible balance leads to better performance across heterogeneous data scenarios, enabling improved outcomes for new and existing users.
+}
+
+Finally, in Section~\ref{sec: decay-exp}, we provide extensive experimental results spanning diverse data sets across vision, text, and graph applications. 
+We show that within-round learning rate decay enhances FL techniques and closes remaining performance gaps with PFL methods without the additional computation and communication overhead required by such methods.
+Importantly, we consistently observe a 1 to 4 percentage point improvement in average test set accuracy for new and existing users over FedAvg.
+
+\paragraph{Roadmap.}
+The organization of this work is as follows.
+First, Section~\ref{sec: decay-related} briefly summarizes related work from personalized federated learning and meta-learning.
+Second, Section~\ref{sec: decay-method} introduces our approach, mathematically justifies its improved flexibility, and establishes its convergence rate.
+Finally, Section~\ref{sec: decay-exp} gives empirical evidence for performance improvements and computational cost compared with other benchmark methods.
+

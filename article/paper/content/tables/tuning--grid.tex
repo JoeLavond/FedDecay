@@ -1,0 +1,25 @@
+\begin{table*}[htbp]
+    \centering
+    
+    \begin{adjustbox}{max width = \linewidth}
+        \begin{tabular}{|l|c|c|c|}
+        \hline
+            Hyper-parameter & Algorithm & Data Set & Tuning Grid \\
+            \hline
+            Local Epochs & - & - & $\left\{ 1, 3 \right\}$ \\
+            Batch Size & - & SST2 & $\left\{ 16, 32, 64 \right\}$ \\
+            Learning Rate & - & - & $\left\{ 0.005, 0.01, \ldots, 1.0 \right\}$ \\
+            Regularization Rate & Ditto, pFedMe & - & $\left\{ 0.05, 0.1, 0.2, 0.5, 0.9 \right\}$ \\
+            Meta-learning Step & pFedMe & - & $\left\{ 1, 3 \right\}$ \\
+            Mixture Number & FedEM & - & $\left\{ 3 \right\}$ \\
+            Local Decay & FedDecay & - & $\left\{0, 0.2, \ldots, 1.0 \right\}$ \\
+            \hline
+        \end{tabular}
+    \end{adjustbox}
+    
+    \caption{
+        Hyper-parameter grid search details. If no algorithm or data set is specified, the given hyper-parameter search will be applied for all.
+    }
+    \label{tab: tuning--grid}
+    %\vspace{-10pt}
+\end{table*}

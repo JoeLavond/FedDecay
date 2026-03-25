@@ -1,0 +1,9 @@
+We conduct a series of experiments to ensure the robustness of our findings against the selection of random seeds.
+Given the constraints of our computational resources, we focus on replicating the less computational FL methods using three distinct fixed seeds.
+We chose FEMNIST and PUBMED to have one example of full and partial user participation.
+We present the averaged top-run metrics for new and existing users across the FEMNIST and PUBMED data sets in Table~\ref{tab: metrics--seed--femnist} and Table~\ref{tab: metrics--seed--pubmed}.
+Notably, the FedDecay approach consistently achieves the highest average accuracy among the FL algorithms, catering to new and existing users.
+Moreover, it demonstrates exceptional performance regarding the best ten-percentile accuracy for existing users.
+These results show the reliability and generalizability of our proposed FedDecay method.
+\input{paper/content/tables/metrics--seed--femnist}
+\input{paper/content/tables/metrics--seed--pubmed}

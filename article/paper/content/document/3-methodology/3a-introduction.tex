@@ -1,0 +1,30 @@
+We consider Federated Learning constructed over $n = 1, \ldots, N$ communication rounds, each consisting of $k = 1, \ldots, K$ local update steps.
+The set $C = \left[1, \ldots, M \right]$ represents the users participating in federated learning, each with local objective function $F_i$. Federated learning aims to find the model that minimizes the average user objective.
+Note we distinguish $F_i$, which is evaluated on the entire local data set, from $F_i^{(n, k)}$, which is evaluated on data from the $k$-th local update step in round $n$.
+In each round, a subset of users, $S \subseteq C$, participates in the update of the global model, and the case $S = C$ is full user participation.
+We denote the global model at communication round $n$ as $\theta_g^{(n)}$, and $\theta_i^{(n, k)}$ represents the $i$-th user's copy of the shared model after $k$ of $K$ planned local update steps with learning rate $\eta$.
+This section begins with introducing our notation for the federated learning process.
+
+Before introducing the proposed method, we provide background information on the similarities and differences between the popular existing methods: FedSGD, FedAvg \citep{fedavg}, and FOMAML \citep{reptile}. 
+We believe this viewpoint of existing algorithms is essential for understanding the derivation and benefits of our proposal.
+\edit{
+Importantly, we justify that our proposed method can flexibly balance the goals of \textbf{initial model success}, shared model performance on the local datasets, and \textbf{rapid personalization}, personalized model performance on local data after fine-tuning.
+Mathematically, we define initial model success in Equation~\ref{eq: ims} as the average user objective with the shared model at the end of federated training. 
+Similarly, rapid personalization in Equation~\ref{eq: rp} is the average user objective with the personalized model, fine-tuned with the local data, after federated training is complete as indicated by the superscript $(N + 1)$. 
+}
+\edit{
+\begin{align}
+        F_{IMS} &= \frac{1}{M} \sum_{i = 1}^M F_i (\theta_g^{(N)}) \label{eq: ims} \\
+    F_{RP} &= \frac{1}{M} \sum_{i = 1}^M F_i(\theta_i^{(N + 1)}) \label{eq: rp}
+\end{align}
+}
+
+\edit{
+We remark that either of these objectives could be weighted.
+However, in this work, we focus on an algorithm that performs well for all users and treats all users equally. 
+Note that $F_{IMS}$ is the same objective as commonly minimized in traditional Federated Learning and $F_{RP}$ for Personalized Federated Learning (and meta-learning). 
+We will demonstrate that controlling the application-specific focus between initial model success and rapid personalization improves personalization and can extend to new users without sufficient data for fine-tuning.
+Contrary to intuition, we find that relative to previous applications of meta-learning, placing additional emphasis on initial model success can improve performance after rapid personalization. 
+We believe this applies to most federated learning scenarios where some similarities exist between users. 
+} 
+Furthermore, we demonstrate how to maintain the same rate of convergence as FedAvg under certain assumptions while preserving the interpretability of the model performance trade-off mentioned above. 

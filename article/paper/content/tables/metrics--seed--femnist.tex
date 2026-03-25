@@ -1,0 +1,32 @@
+\begin{table*}[h]
+    \centering
+        \begin{tabular}{|l|rrr|rrr|rrr|}
+        \hline
+            & 
+                \multicolumn{3}{c|}{Existing Users} & 
+                \multicolumn{3}{c|}{New Users} \\ 
+            Method & 
+                $\Bar{Acc}$ & $\Breve{Acc}$ & $\sigma_{Acc}$ &
+                $\Bar{Acc}$ & $\Breve{Acc}$ & $\sigma_{Acc}$ \\
+        \hline
+            FOMAML & 
+                0.8971 & 0.8223 & 0.0687 & 
+                0.9044 & \textbf{0.8371} & 0.0578 \\
+            FedAvg & 
+                0.8948 & 0.8227 & 0.0701 & 
+                0.9095 & 0.8318 & 0.0563 \\
+            % epoch
+            \textbf{FedDecay} & 
+                \textbf{0.8993} & \textbf{0.8285} & 0.0688 & 
+                \textbf{0.9127} & 0.8294 & 0.0545 \\
+            % batch
+            %FedDecay-Batch & 
+                %0.9004 & 0.8315 & 0.0686 & 
+                %0.9141 & 0.8294 & 0.0545 \\
+        \hline
+        \end{tabular}
+    \caption{
+        Generalization metrics for new and existing users on the FEMNIST (image) data set. Values reported are the average metric for each single-model-based method's top run across several seeds. FedDecay produces the maximum average test set accuracy on new and existing users.
+    }
+    \label{tab: metrics--seed--femnist}
+\end{table*}

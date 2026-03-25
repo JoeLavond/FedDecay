@@ -1,0 +1,39 @@
+\begin{table*}[h]
+    \resizebox{\textwidth}{!}{
+        \begin{tabular}{|l|rrr|rrr|}
+        \hline
+            Method & 
+                Local Epochs ($K$) & Batch Size & Learning Rate ($\alpha$) & 
+                Regularization Rate &  Meta-learning Steps &  Local Decay ($\beta$) \\
+        \hline
+            Ditto & 
+                3 & 16.0 & 0.05 & 
+                0.8 & - & - \\
+            FedBN & 
+                3 & 64.0 & 0.10 & 
+                - & - & - \\
+            FedEM & 
+                3 & 16.0 & 0.05 & 
+                - & - & - \\
+            pFedMe & 
+                3 & 64.0 & 0.05 & 
+                0.8 & 3.0 & - \\
+        \hline
+            FOMAML & 
+                3 & 16.0 & 0.05 & 
+                - & - & - \\
+            FedAvg & 
+                3 & 16.0 & 0.05 & 
+                - & - & - \\
+            FedDecay - Exponential & 
+                3 & 16.0 & 0.05 & 
+                - & - & 0.6 \\
+            FedDecay - Linear & 
+                3 & 16.0 & 0.05 & 
+                - & - & 0.4 \\
+        \hline
+        \end{tabular}
+    }
+    \caption{Main experiment hyper-parameters for all methods after tuning on SST}
+    \label{tab: params--sst}
+\end{table*}

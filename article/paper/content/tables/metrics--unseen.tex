@@ -1,0 +1,61 @@
+\begin{table*}[htbp]
+    \centering
+    \adjustbox{max width=\textwidth}{
+        \begin{tabular}{|c|l|rrr|rrr|rrr|}
+        \hline
+          \multirow{2}{*}{Type}& \multirow{2}{*}{Method} & 
+                \multicolumn{3}{c|}{FEMNIST (image)} & 
+                \multicolumn{3}{c|}{SST2 (text)} & 
+                \multicolumn{3}{c|}{PUBMED (graph)} \\ 
+             &  & 
+                $\Bar{Acc}$ & $\Breve{Acc}$ & $\sigma_{Acc}$ &
+                $\Bar{Acc}$ & $\Breve{Acc}$ & $\sigma_{Acc}$ &
+                $\Bar{Acc}$ & $\Breve{Acc}$ & $\sigma_{Acc}$ \\
+        \hline         
+            & Ditto & 
+                0.5672 & 0.4444 & 0.0921 &
+                0.4746 & 0.0000 & 0.4010 &
+                0.2442 & - & - \\
+\multirow{2}{*}{\shortstack{Personalized \\ Method}}
+            & FedBN & 
+                0.9059 & 0.8302 & 0.0544 &
+                \textbf{0.8030} & \textbf{0.6667} & 0.1275 &
+                \textbf{0.8004} & - & - \\
+            & FedEM & 
+                \textbf{0.9175} & 0.8333 & 0.0526 &
+                0.7404 & 0.6379 & 0.2141 &
+                0.7879 & - & - \\
+            & pFedMe & 
+                0.9036 & \textbf{0.8438} & 0.0751 &
+                0.7785 & 0.6406 & 0.1179 &
+                0.7932 & - & - \\
+        \hline
+\multirow{3}{*}{\shortstack{Single-model\\ Based}}
+            & FOMAML & 
+                0.8989 & 0.8113 & 0.0604 &
+                0.7680 & 0.6667 & 0.1057 &
+                0.7950 & - & - \\
+            & FedAvg & 
+                0.9055 & \textbf{0.8491} & 0.0530 &
+                0.7680 & 0.6667 & 0.1057 &
+                0.7914 & - & - \\
+            & \textbf{FedDecay} & 
+                \textbf{0.9152} & 0.8421 & 0.0485 &
+                % 0.9194 & 0.8421 & 0.0476 &
+                \textbf{0.8101} & \textbf{0.6724} & 0.1087 &
+                % 0.7708 & 0.6667 & 0.0987 & 
+                \textbf{0.8039} & - & - \\
+        \hline
+        \end{tabular}
+    }
+    %\vspace{-5pt}
+    \caption{
+        Generalization to new users who did not participate in federated training after fine-tuning.
+        FedDecay has the most considerable average test set accuracy ($\Bar{Acc}$) of any single-model-based technique on all data sets, even outperforming personalized methods on SST2 and PUBMED. 
+        Note that these PFL methods are upper bounds, not relevant baselines, due to their higher computational cost and memory requirements.
+        With five total users for PUBMED, only a single user is held out to evaluate generalization.
+        Hence, there are no values for the bottom ten percentile ($\Breve{Acc}$) or standard deviation ($\sigma_{Acc}$) for new users.
+    }
+    \label{tab: metrics--unseen}
+    %\vspace{-10pt}
+\end{table*}

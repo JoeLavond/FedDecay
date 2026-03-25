@@ -1,0 +1,48 @@
+We extend the work of \citet{reptile} to understand how the updates of FedDecay impact initial model success, rapid personalization, and generalization.
+Consider the gradient from a sequence of loss functions $\{ F_i^{(j)} \}_{j = 0}^{K - 1}$ where $K \in \{ z \in \mathbb{Z} \mid z \geq 2 \}$.
+For example, the above sequence could be a local objective function evaluated on different mini-batches.
+Consider the following update for any sequence of scaling coefficients $\{ \beta_j \mid \beta_0 \neq 0 \}_{j = 0}^{K - 1}$. 
+\begin{align*}
+    & \theta_i^{(k)} = \theta_i^{(k - 1)} - \eta \beta_{k - 1} \times \nabla F_i^{(k - 1)}(\theta_i^{(k - 1)}) \textrm{ for } k = 1, \ldots, K 
+\end{align*}
+
+Let $g_i^{(j)} = \nabla F_i^{(j)} ( \theta_i^{(j)} )$ and define $\Tilde{g}_i^{(j)} = \nabla F_i^{(j)} (\theta_g)$ and $\Tilde{H}_i^{(j)} = \nabla^2 F_i^{(j)} (\theta_g)$ as the gradient and Hessian of the $j$-th loss function evaluated at the initial point.
+\begin{align*}
+    \allowdisplaybreaks
+    g_i^{(j)} = \nabla F_i^{(j)}(\theta_i^{(j)}) &\approx \nabla F_i^{(j)}(\theta_g) + \nabla^2 F_i^{(j)}(\theta_g) \left(\theta_i^{(j)} - \theta_g \right) \\
+    &= \Tilde{g}_i^{(j)} + \Tilde{H}_i^{(j)} \left( \theta_i^{(j)} - \theta_g \right) \\
+    &= \Tilde{g}_i^{(j)} - \eta \Tilde{H}_i^{(j)} \sum_{h = 0}^{j - 1} \beta_{h} \nabla F_i^{(h)}(\theta_i^{(h)}) \\
+    &\approx \Tilde{g}_i^{(j)} - \eta \Tilde{H}_i^{(j)} \sum_{h = 0}^{j - 1} \beta_h\, \Tilde{g}_i^{(h)} 
+\end{align*}
+
+Apply the previous expansion to the FedDecay update.
+\begin{align*}
+    \allowdisplaybreaks
+    g_{FedDecay} &= \dfrac{\theta_i^{(K)} - \theta_g}{- \eta} = \sum_{j = 0}^{K - 1} \left( \dfrac{\theta_i^{(j + 1)} - \theta_i^{(j)} }{- \eta} \right) \\
+        &= \sum_{j = 0}^{K - 1} \beta_{j} \nabla F_i^{(j)}(\theta_i^{(j)}) \\
+        &\approx \sum_{j = 0}^{K - 1} \beta_{j} \left( \Tilde{g}_i^{(j)} - \eta \Tilde{H}_i^{(j)} \sum_{h = 0}^{j - 1} \beta_{h} \Tilde{g}_i^{(h)} \right) \\
+        &= \sum_{j = 0}^{K - 1} \beta_{j} \Tilde{g}_i^{(j)} - \eta \sum_{j = 0}^{K - 1} \left( \beta_{j} \Tilde{H}_i^{(j)} \sum_{h = 0}^{(j - 1)} \beta_{h} \Tilde{g}_i^{(h)} \right) 
+\end{align*}
+\begin{align*}
+    \allowdisplaybreaks
+    \mathbb{E} \left[g_{FedDecay} \right] &\approx \sum_{j = 0}^{K - 1} \beta_{j} \Tilde{g}_i^{(j)} - \eta \sum_{j = 0}^{K - 1} \left( \beta_{j} \Tilde{H}_i^{(j)} \sum_{h = 0}^{j - 1} \beta_{h} \Tilde{g}_i^{(h)} \right) \\
+        &= \mathbb{E} \left[ \Tilde{g}_i^{(j)} \right] \left( \sum_{j = 0}^{K - 1} \beta_{j} \right) - \mathbb{E} \left[ \Tilde{H}_i^{(j)} \Tilde{g}_i^{(h)} \right] \left( \eta \sum_{j = 0}^{K - 1} \left( \beta_{j} \sum_{h = 0}^{j - 1} \beta_{h} \right) \right)\\
+\end{align*}
+
+Hence the following ratio of $\mathbb{E} \left[ \Tilde{H}_i^{(j)} \Tilde{g}_i^{(h)} \right]$ to $\mathbb{E} \left[ \Tilde{g}_i^{(j)} \right]$ for FedDecay.
+Let $\mathcal{B}(k) = \sum_{j = 0}^{k - 1} \beta_{j - 1}$.
+\begin{align*}
+    & R_{FedDecay} = \dfrac{\eta \sum_{j = 0}^{K - 1} \beta_j \mathcal{B}(j)}{\mathcal{B}(K)}
+\end{align*}
+
+Note that these equations do not need to be within-round decay and that some expressions hold more generally. 
+However, our interest is in addressing our concern that existing meta-learning techniques, which facilitate rapid personalization, do not require a model to have good initial success. 
+
+Exponential decay $\beta_{j} = \beta^{j}$ allows for the simplification of the above ratio after using the finite sum formula for the geometric series, $\mathcal{B}(k) = \frac{1 - \beta^k}{1 - \beta}$. 
+\begin{align*}
+    \allowdisplaybreaks
+    & R_{FedDecay} = \eta \left( \sum_{j = 0}^{K - 1} \beta^{j} \left( \frac{1 - \beta^{j}}{1 - \beta} \right) \right) \times \left( \frac{1 - \beta}{1 - \beta^K} \right) \\
+    & \quad = \eta \beta \left( \dfrac{(1 - \beta^K)(1 - \beta^{K - 1})}{(1 - \beta)^2 (1 + \beta)} \right) \times \left( \frac{1 - \beta}{1 - \beta^K} \right) \\
+    & \quad = \eta \beta \left( \dfrac{1 - \beta^{K - 1}}{(1 - \beta)(1 + \beta)} \right) \\
+    & \quad = \eta \beta \left( \dfrac{1 - \beta^{K - 1}}{1 - \beta^2} \right)
+\end{align*}
