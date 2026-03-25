@@ -191,10 +191,10 @@ comments explaining the mathematics.
 
 Implements a First-Order MAML baseline.  FOMAML uses only the last local
 gradient step (θ_K − θ_{K−1}) as the meta-gradient approximation, avoiding
-the need for second-order (Hessian) information.  This file includes inline
-documentation of two known bugs (a `NameError` on `step_iter` and a
-`TypeError` from `zip(*ctx.models)`) that should be corrected before using
-FOMAML in new experiments.
+the need for second-order (Hessian) information.  Snapshots are taken at
+local steps K−1 and K; the final update anchors the result at θ_0 so the
+server aggregation receives a direction equivalent to a single meta-gradient
+step.
 
 **`feddecay/`**
 

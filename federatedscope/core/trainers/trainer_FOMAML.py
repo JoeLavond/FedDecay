@@ -51,24 +51,6 @@ The global contribution is then:
 Usage (via cfg):
     federate.method: FOMAML
     federate.local_update_steps: K   # number of local update steps
-
-Known issues / limitations
---------------------------
-* The variable ``step_iter`` in ``_hook_append_model`` should be
-  ``ctx.step_iter``.  As written, the function will raise a ``NameError``
-  at runtime.  The correct condition should read:
-
-      if ctx.step_iter in (ctx.local_update_steps - 1, ctx.local_update_steps):
-
-* ``zip(*ctx.models)`` in ``_hook_FOMAML_model`` would need each model to be
-  iterable (i.e. to yield its parameter tensors).  PyTorch ``nn.Module``
-  objects are not directly iterable; the intended usage is likely
-  ``zip(ctx.models[0].parameters(), ctx.models[1].parameters(),
-       ctx.models[2].parameters())``.
-
-* FOMAML is included as a baseline and may require fixes before use in new
-  experiments.  FedDecay (``trainer_decay.py``) was the primary contribution
-  used in all reported experiments.
 """
 
 import copy
@@ -181,7 +163,7 @@ def _hook_FOMAML_init(ctx):
     """
     # ctx.models will hold [θ_0, θ_{K-1}, θ_K] after all hooks complete.
     ctx.models = [copy.deepcopy(ctx.model)]  # θ_0: global model at round start
-    ctx.step_iter = 0                         # local epoch counter
+    ctx.step_iter = 0                         # local epoch counter (1-based after _hook_update_step)
 
 
 def _hook_update_step(ctx):
@@ -196,20 +178,16 @@ def _hook_append_model(ctx):
         Δθ_FOMAML = θ_K − θ_{K−1}
 
     This hook appends a deep copy of the model to ``ctx.models`` when the
-    current step index matches step K-1 or step K (using 1-based counting
-    that is consistent with how ``ctx.step_iter`` is incremented by
-    ``_hook_update_step`` before this hook runs).
+    current step index (already incremented by ``_hook_update_step``) equals
+    K−1 or K, where K = ``ctx.local_update_steps``.
 
-    WARNING: This function contains a bug — ``step_iter`` should be
-    ``ctx.step_iter``.  As written, this will raise a ``NameError`` at
-    runtime.  See the module docstring for details.
+    After both calls complete, ``ctx.models`` is:
+        [θ_0, θ_{K-1}, θ_K]
+    ready for ``_hook_FOMAML_model`` to consume.
     """
-    # NOTE: `step_iter` below is a NameError; should be `ctx.step_iter`.
-    # The intended condition is:
-    #   if ctx.step_iter in (ctx.local_update_steps - 1, ctx.local_update_steps):
-    if step_iter in (  # noqa: F821  (known bug — see module docstring)
-        ctx.local_update_steps - 1, ctx.local_update_steps
-    ):
+    # ctx.step_iter has already been incremented by _hook_update_step for
+    # this epoch, so it equals the 1-based index of the epoch that just ran.
+    if ctx.step_iter in (ctx.local_update_steps - 1, ctx.local_update_steps):
         # Append a frozen snapshot of the model at this local step.
         ctx.models.append(
             copy.deepcopy(ctx.model)
@@ -219,8 +197,7 @@ def _hook_append_model(ctx):
 def _hook_FOMAML_model(ctx):
     """Apply the FOMAML meta-update at the end of the local training round.
 
-    After all local epochs complete, ``ctx.models`` should contain three
-    snapshots (see ``_hook_FOMAML_init`` and ``_hook_append_model``):
+    After all local epochs complete, ``ctx.models`` contains three snapshots:
         ctx.models[0] = θ_0     (initial global model)
         ctx.models[1] = θ_{K-1} (second-to-last local step)
         ctx.models[2] = θ_K     (last local step)
@@ -230,23 +207,19 @@ def _hook_FOMAML_model(ctx):
 
     This uses only the last local gradient step as an approximation to the
     meta-gradient, without requiring second-order (Hessian) information.
-
-    WARNING: ``zip(*ctx.models)`` unpacks the three model objects as arguments
-    to ``zip`` and then tries to iterate over each one.  ``torch.nn.Module``
-    objects are not directly iterable, so this will raise a ``TypeError`` at
-    runtime.  The intended pattern is likely:
-        zip(ctx.models[0].parameters(),
-            ctx.models[1].parameters(),
-            ctx.models[2].parameters())
-    See the module docstring for details.
+    Parameters are updated in-place on ``ctx.models[0]``, which FederatedScope
+    will read back as the trained model for this round.
     """
     # Iterate over parameter tensors from all three model snapshots in lockstep.
-    # NOTE: zip(*ctx.models) will raise TypeError because nn.Module is not
-    # directly iterable.  See the module docstring for the intended fix.
+    # .parameters() yields tensors in a consistent, deterministic order for any
+    # given nn.Module, so zipping the three generators keeps tensors aligned.
     for (
         init_parameter, last_parameter, current_parameter
-    ) in zip(*ctx.models):
-
+    ) in zip(
+        ctx.models[0].parameters(),  # θ_0: initial global model
+        ctx.models[1].parameters(),  # θ_{K-1}: second-to-last local step
+        ctx.models[2].parameters(),  # θ_K: last local step
+    ):
         # θ_0: the global model weights at the start of this round
         init_weights = init_parameter.detach().clone()
 
