@@ -13,7 +13,6 @@ Recent works \citep{pfl-bench, pfl} argue that alternatively, the focus should b
 However, learning additional models can require extra memory and computation, and managing multiple models in PFL may lead to heightened communication requirements between users, which can be a bottleneck in real-world applications.
 We desire a method that can perform well with heterogeneous user data and has a computational cost similar to FL techniques.
 
-\edit{
 Next, meta-learning has been successfully applied to PFL to address the challenge of diverse user data without requiring additional models during training.
 Instead of learning multiple models during the federated training process, meta-learning methods focus on producing a shared model that can quickly adapt to local datasets through fine-tuning.
 This approach significantly reduces the computational and memory overhead associated with PFL methods.
@@ -24,7 +23,6 @@ We leverage within-round learning rate decay to balance initial model performanc
 By adjusting the decay hyperparameter, our method enables application-specific emphasis, providing a customizable approach to optimize performance for varying levels of data heterogeneity.
 Crucially, this modification generalizes the widely used FedAvg algorithm~\citep{fedavg}, maintaining its computational simplicity and convergence rate~\citep{fedavg-conv}, requiring no additional gradients or models to be computed or stored.
 In Section~\ref{sec: decay-method-decay}, we mathematically justify how this flexible balance leads to better performance across heterogeneous data scenarios, enabling improved outcomes for new and existing users.
-}
 
 Finally, in Section~\ref{sec: decay-exp}, we provide extensive experimental results spanning diverse data sets across vision, text, and graph applications. 
 We show that within-round learning rate decay enhances FL techniques and closes remaining performance gaps with PFL methods without the additional computation and communication overhead required by such methods.

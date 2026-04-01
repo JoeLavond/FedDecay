@@ -2,8 +2,11 @@ The computational and communication costs incurred during training are integral 
 Personalized federated learning methods, in particular, often demand increased computation and memory resources.
 In this context, we draw attention to the cost implications of various methods.
 As depicted in Figure~\ref{fig: costs}, FedDecay exhibits comparable computational costs to other FL techniques.
-The cost of learning rate scheduling is negligible per iteration, and the potential increase in communication rounds due to decaying updates does not meaningfully affect computation. 
-In our experiments, FedDecay returns an identical cost to FedAvg for FEMNIST and SST2, which terminate in the same number of epochs.
+\edit{
+The cost of learning rate scheduling is negligible per iteration.
+Importantly, within-round decay does not alter the number of communication rounds: the global aggregation step is unchanged, and the convergence rate of $\mathcal{O}(N^{-1})$ established in Theorem~\ref{thm: conv} matches that of FedAvg.
+This is confirmed empirically: FedDecay terminates in the same number of epochs as FedAvg on FEMNIST and SST2.
+}
 FedDecay achieves similar or superior results without considerably higher communication and computation costs.
 \begin{figure}[htbp]
     \centering

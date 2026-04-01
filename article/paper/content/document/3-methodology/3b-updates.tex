@@ -3,36 +3,34 @@ We omit the communication round $n$ from the notation to simplify the notation.
 We define the size $K$ sequence of loss functions denoted as $\{ F_i^{(j)} \}_{j = 0}^{K - 1}$, where $K$ is the number of local update steps.
 Recall that $F_i^{(k)}$ is the local objective function of the $i$-th user evaluated on data from the $k$-th local update step.
 Let $g_i^{(k)} = \nabla F_i^{(k)} \left( \theta_i^{(k)} \right)$ denote the gradient of user $i$ on the $k$-th local update step.
-Equation~\ref{eq: theta} defines the standard local update equation for the FedAvg ($K > 1$) or FedSGD ($K = 1$) procedure\edit{, which are produced by users performing stochastic gradient descent for $K$ updates}. 
+Equation~\ref{eq: theta} defines the standard local update equation for the FedAvg ($K > 1$) or FedSGD ($K = 1$) procedure, which are produced by users performing stochastic gradient descent for $K$ updates.
 \begin{align}
     \theta_i^{(k)} = \theta_i^{(k - 1)} - \eta g_i^{(k - 1)} \textrm{ for all } k = 1, \ldots, K
     \label{eq: theta}
 \end{align}
 
 After $K$-steps of local training, we aggregate the updated models $\theta_i^{(K)}$ or, equivalently, the changes made by local updates as in Equation~\ref{eq: global}.
-\edit{The new shared model becomes the averaged element-wise parameters from the locally trained user models.}
+The new shared model becomes the averaged element-wise parameters from the locally trained user models.
 \begin{align}
         \theta_g \leftarrow \dfrac{1}{\abs{S}} \sum_{i \in S} \theta_i^{(K)} = \theta_g + \dfrac{1}{\abs{S}} \sum_{i \in S} \underbrace{\left( \theta_i^{(K)} - \theta_g \right)}_{-\eta\, \times\, g_{Method}}
     \label{eq: global}
 \end{align}
 
 Our comparison of various methods will focus on understanding their expressions of the $\theta_i^{(K)} - \theta_g$ term given in Equation~\ref{eq: global}.
-\edit{This expression is the change that a user's local training made to the shared model.}
+This expression is the change that a user's local training made to the shared model.
 For the FedAvg procedure, we can use Equation~\ref{eq: theta} recursively to write 
 \begin{align}
     \theta_i^{(K)} = \theta_i^{(0)} - \eta \sum_{j = 0}^{K - 1} g_i^{(j)}  \label{eq: recursive}
 \end{align}
 Noting $\theta_i^{(0)} = \theta_g$, the change a user makes with the FedAvg procedure, $\theta_i^{(K)} - \theta_g$, is driven by $\sum_{j = 0}^{K - 1} g_i^j$.
-We refer to this component of a ususer'shange as the \textbf{method gradient}, $g_{Method}$, due to its formulation and use in Equation~\ref{eq: recursive}.
+\edit{We refer to this component of a user's change as the \textbf{method gradient}, $g_{Method}$, due to its formulation and use in Equation~\ref{eq: recursive}.}
 Similarly, other FL methods have a method gradient consisting of the gradients at local update steps.
 Equation~\ref{eq: methods} presents the specific gradients used from  Equation~\ref{eq: theta} for FedSGD, FedAvg \citep{fedavg}, and FOMAML \citep{reptile}.
 \begin{align}
     g_{FedSGD} = g_i^{(0)}, \quad g_{FedAvg} = \sum_{j = 0}^{K - 1} g_i^{(j)}, \quad g_{FOMAML} = g_i^{(K - 1)} \label{eq: methods}
 \end{align}
 
-\edit{
-Notably, the above methods result in local changes to the global model based on sums of different local gradients computed to update the model. 
-In the next section, we demonstrate which and how much of each local gradient used during local training determines how much emphasis is placed between minimizing Equation~\ref{eq: ims} and Equation~\ref{eq: rp}. 
-Furthermore, we discover that within-round learning rates can flexibly emphasize objectives of initial model success and rapid personalization based on the decay used. 
-In Section~\ref{sec: decay-exp}, we show that choosing decay that places additional emphasis on Equation~\ref{eq: ims}, relative to FedAvg and FOMAML, results in solutions with improved personalized performance, despite Equation~\ref{eq: rp} being the objective associated with rapid personalization.  
-}
+Notably, the above methods result in local changes to the global model based on sums of different local gradients computed to update the model.
+In the next section, we demonstrate which and how much of each local gradient used during local training determines how much emphasis is placed between minimizing Equation~\ref{eq: ims} and Equation~\ref{eq: rp}.
+Furthermore, we discover that within-round learning rates can flexibly emphasize objectives of initial model success and rapid personalization based on the decay used.
+In Section~\ref{sec: decay-exp}, we show that choosing decay that places additional emphasis on Equation~\ref{eq: ims}, relative to FedAvg and FOMAML, results in solutions with improved personalized performance, despite Equation~\ref{eq: rp} being the objective associated with rapid personalization.

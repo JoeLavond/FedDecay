@@ -19,3 +19,11 @@ More importantly, FedDecay balances AvgGrad and AvgGradInner terms, yielding sig
 Notably, FedDecay still has the best overall performance among the three methods.
 Lastly, in the case of the PUBMED data set, our method's performance seems resilient to the choice of $\beta$.
 However, a straightforward grid search enhances performance for new and existing users over FedAvg and FedSGD.
+
+\edit{
+Table~\ref{tab: params--sensitivity} also speaks to whether coarse tuning of $\beta$ is generally sufficient.
+Across all three datasets, every value of $\beta$ that was not terminated early by hyperband outperforms FedAvg ($\beta = 1$), suggesting that the benefit of decay is robust to the precise choice of $\beta$ rather than requiring fine-grained tuning.
+A practitioner using only the coarse grid $\{0.2, 0.4, 0.6\}$ would recover a competitive solution on each dataset.
+Furthermore, an interpretable pattern emerges for selecting $\beta$: datasets with naturally similar users (FEMNIST, where all authors share a common script) favor smaller $\beta$ values that place greater relative emphasis on initial model success, while datasets with more pronounced distributional heterogeneity (SST2, partitioned by Dirichlet allocation) favor larger $\beta$ values that retain more emphasis on rapid personalization.
+This suggests that when prior knowledge about user similarity is available, it can guide an informed initial choice of $\beta$, reducing the search space even further.
+}

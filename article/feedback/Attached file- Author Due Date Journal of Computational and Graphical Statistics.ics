@@ -1,0 +1,21 @@
+BEGIN:VCALENDAR
+PRODID:Calendar
+VERSION:2.0
+BEGIN:VEVENT
+UID:0@default
+CLASS:PUBLIC
+DESCRIPTION:A task deadline is coming up. Please log in to the following site to complete your task. \n\nJournal Name: Journal of Computational and Graphical Statistics\n\nJournal URL: https://mc.manuscriptcentral.com/jcgs\n\nManuscript Title: FedDecay: Balancing Model Performance and Rapid Personalization in Federated Learning with Learning Rate Scheduling\n\nManuscript ID: JCGS-25-127
+DTSTART;VALUE=DATE:20260915
+LOCATION:
+SUMMARY;LANGUAGE=en-us:Decision on JCGS-25-127
+TRANSP:TRANSPARENT
+BEGIN:VALARM
+TRIGGER:-PT12H
+REPEAT:2
+DURATION:PT6H
+ACTION:DISPLAY
+DESCRIPTION:Decision on JCGS-25-127
+END:VALARM
+END:VEVENT
+END:VCALENDAR
+

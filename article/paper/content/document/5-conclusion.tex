@@ -1,13 +1,19 @@
-\paragraph{Limitations.} 
+\paragraph{Limitations.}
 While our study offers valuable insights into the performance of our proposed method across various datasets, we acknowledge certain limitations that open avenues for future exploration and optimization.
-First, our analysis concentrated on a selection of data heterogeneity scenarios, encompassing natural and partitioned heterogeneity.
-We acknowledge that our findings may not fully encapsulate the dynamics present in more extreme non-iid scenarios. 
 \edit{
-We do not believe our proposal would offer performance improvements for unusually distant local datasets. 
-In Section~\ref{sec: decay-exp}, we find that placing additional emphasis on initial model success results in grander personalized performance. 
-Our intuition is based on the hypothesis that a shared model that performs well for all users and can fine-tune well is often a better initialization than a model that fine-tunes well but may have no initial model success. 
-When users are highly different, finding a model that will perform well for all of them is often impossible. 
-In this case, we expect our method to suggest using $\beta = 1$ (no decay) and recover the FedAvg solution. 
+Our experiments span a meaningful range of data heterogeneity, from natural (FEMNIST, where all authors share a common script) to synthetic moderate-to-high heterogeneity (SST2, Dirichlet allocation with $\alpha = 0.4$), consistent with the heterogeneity settings used in the benchmark underlying our experiments.
+Theorem~\ref{thm: conv} further covers arbitrary heterogeneity $\Gamma$, so convergence guarantees extend to all non-iid levels.
+Together, these experiments and theory characterize the regime in which FedDecay is designed to operate: settings where sufficient inter-user similarity exists for a shared model to be beneficial.
+In the extreme case, as discussed in Section~\ref{sec: decay-related}, standard FL already degrades substantially when users are highly dissimilar, and PFL methods maintaining per-user models become necessary.
+Our method does not introduce harm in this regime: grid search recovers $\beta = 1$, returning the FedAvg solution.
+Practitioners can use the tuned value of $\beta$ as a diagnostic: values near one indicate that decay provides no additional benefit over FedAvg, at which point PFL should be considered.
+}
+
+\edit{
+Second, we have not explored client-specific decay schedules, where each user applies a different $\beta_i$ based on local data statistics.
+Such an adaptive mechanism could potentially expand personalization further; however, selecting a client-specific $\beta_i$ requires per-client hyperparameter tuning, which either substantially increases communication overhead or demands adequate local validation data at each client—resources that may not be available in practice.
+Furthermore, Theorem~\ref{thm: conv} assumes a uniform decay sequence, and extending the theoretical guarantees to heterogeneous per-client schedules would require non-trivial additional analysis.
+We identify this as a promising direction for future work.
 }
 
 Next, we focus mainly on exponential decay to show that scaling local gradient updates allows for balancing the objectives of initial model success and the ability to personalize rapidly.
@@ -15,15 +21,16 @@ However, many alternative decay schemes for learning rates exist, but we have on
 Future research may explore these alternative decay schemes to enrich our understanding and potentially enhance our method's performance.
 
 Finally, we evaluated our proposed method in isolation without extensively exploring its compatibility with other state-of-the-art techniques.
-While this approach enabled us to assess our method's intrinsic merits, practical deployment often requires combining multiple strategies for optimal results.
+\edit{
+Because FedDecay modifies only the within-round local learning rate, it is structurally orthogonal to the methods discussed in Section~\ref{sec: decay-related} that alter the global aggregation or the local objective, such as FedProx, FedAdam, and FedYogi.
+These combinations are a natural avenue for future empirical and theoretical investigation.
+}
 Much of our theoretical work relies on stochastic gradient descent as the optimizer, and we intend to expand our theory to alternative optimizers in future work.
 
 \paragraph{Conclusion.}
-\edit{
-In summary, this study introduces an unexplored approach to federated learning. It incorporates within-round learning rate decay to balance the objectives of initial model success and rapid personalization. 
-This additional flexibility allows FedDecay to adapt, with less decay for more considerable user differences, to the problem-specific data heterogeneity for better performance without changing the convergence rate. 
-In Section~\ref{sec: decay-exp}, we consistently demonstrate that some within-round learning rate decay outperforms both no emphasis on rapid personalization (FedSGD) and no decay (FedAvg). 
-In addition to consistently better performance than the popular FedAvg procedure, we often return metrics similar to personalized methods that require additional memory and computation, mainly when generalizing to new users. 
+In summary, this study introduces an unexplored approach to federated learning. It incorporates within-round learning rate decay to balance the objectives of initial model success and rapid personalization.
+This additional flexibility allows FedDecay to adapt, with less decay for more considerable user differences, to the problem-specific data heterogeneity for better performance without changing the convergence rate.
+In Section~\ref{sec: decay-exp}, we consistently demonstrate that some within-round learning rate decay outperforms both no emphasis on rapid personalization (FedSGD) and no decay (FedAvg).
+In addition to consistently better performance than the popular FedAvg procedure, we often return metrics similar to personalized methods that require additional memory and computation, mainly when generalizing to new users.
 Notably, within-round learning rate decay does not require additional memory and computationally requires only a simple grid search to find improved solutions.
-In summary, we propose a cheap, interpretable modification to FedAvg that consistently returns a 1-4 percent increase in average test set accuracies. 
-}
+In summary, we propose a cheap, interpretable modification to FedAvg that consistently returns a 1-4 percent increase in average test set accuracies.
