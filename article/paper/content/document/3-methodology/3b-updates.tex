@@ -23,7 +23,7 @@ For the FedAvg procedure, we can use Equation~\ref{eq: theta} recursively to wri
     \theta_i^{(K)} = \theta_i^{(0)} - \eta \sum_{j = 0}^{K - 1} g_i^{(j)}  \label{eq: recursive}
 \end{align}
 Noting $\theta_i^{(0)} = \theta_g$, the change a user makes with the FedAvg procedure, $\theta_i^{(K)} - \theta_g$, is driven by $\sum_{j = 0}^{K - 1} g_i^j$.
-\edit{We refer to this component of a user's change as the \textbf{method gradient}, $g_{Method}$, due to its formulation and use in Equation~\ref{eq: recursive}.}
+We refer to this component of a user's change as the \textbf{method gradient}, $g_{Method}$, due to its formulation and use in Equation~\ref{eq: recursive}.
 Similarly, other FL methods have a method gradient consisting of the gradients at local update steps.
 Equation~\ref{eq: methods} presents the specific gradients used from  Equation~\ref{eq: theta} for FedSGD, FedAvg \citep{fedavg}, and FOMAML \citep{reptile}.
 \begin{align}

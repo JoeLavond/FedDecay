@@ -14,9 +14,6 @@
 \newcommand\abs[1]{\left\lvert#1\right\rvert}
 \newcommand\norm[1]{\left\lVert#1\right\rVert}
 
-\usepackage{xcolor}
-\newcommand\edit[1]{\textcolor{blue}{#1}}
-
 \usepackage{natbib}
 \bibliographystyle{plainnat}
 
@@ -73,7 +70,7 @@
 
 \bigskip
     \begin{abstract}%
-        Federated learning (FL) is a powerful technique for collaboratively training a single centralized model on distributed local data sources.  By aggregating model information without disclosing the local training data, FL preserves data privacy. However, the inherent heterogeneity in local data sets challenges the performance of FL techniques, especially when data is very diverse across local sources. Personalized Federated Learning (PFL) can mitigate this challenge using multiple models but often requires additional memory and computation. This work does not propose a new PFL method but instead explores how learning rate decay within each local training round can improve model performance across local data sets after fine-tuning. We provide theoretical insights and empirical evidence of efficacy across diverse domains, including vision, text, and graph data. Our extensive experiments demonstrate that learning rate scheduling alone outperforms other FL methods regarding generalization to new data for both new and existing users. Moreover, it performs comparably to PFL methods, particularly for new users, while maintaining similar computational and memory requirements as FL techniques.
+        Federated learning (FL) is a powerful technique for collaboratively training a single centralized model on distributed local data sources.  By aggregating model information without disclosing the local training data, FL preserves data privacy. However, the inherent heterogeneity in local data sets challenges the performance of FL techniques, especially when data is very diverse across local sources. Personalized Federated Learning (PFL) can mitigate this challenge using multiple models but often requires additional memory and computation. This work does not propose a new PFL method but instead explores how learning rate decay within each local training round can improve model performance across local data sets after fine-tuning. We provide theoretical insights and empirical evidence of efficacy across diverse domains, including vision, text, and graph data. Our extensive experiments demonstrate that learning rate scheduling alone outperforms other FL methods regarding generalization to new data for both new and existing users. Moreover, it performs comparably to PFL methods, particularly for new users, while maintaining similar computational and memory requirements as FL techniques. Supplementary materials, including all code and instructions for reproducing the experiments, are available online.
     \end{abstract}
     
 \noindent%
@@ -121,24 +118,25 @@
     \input{paper/content/document/5-conclusion}
 
 
-% \bigskip
-% \begin{center}
-% {\large\bf SUPPLEMENTARY MATERIAL}
-% \end{center}
+    \bigskip
+    \begin{center}
+    {\large\bf SUPPLEMENTARY MATERIAL}
+    \end{center}
 
-% \begin{description}
+    \begin{description}
 
-% \item[Title:] Brief description. (file type)
+    \item[FedDecay code repository:] All code, configuration files, and instructions
+    required to reproduce the experiments described in this article, including dataset
+    preparation, hyperparameter sweeps, and evaluation scripts.
+    Available at \url{https://github.com/JoeLavond/FedDecay} (zip file).
 
-% \item[R-package for  MYNEW routine:] R-package ÒMYNEWÓ containing code to perform the diagnostic methods described in the article. The package also contains all datasets used as examples in the article. (GNU zipped tar file)
+    \end{description}
 
-% \item[HIV data set:] Data set used in the illustration of MYNEW method in Section~ 3.2. (.txt file)
+    \section*{Acknowledgements}
+    % TODO: Add funding acknowledgements before submission.
 
-% \end{description}
-
-% \section{BibTeX}
-
-% We hope you've chosen to use BibTeX!\ If you have, please feel free to use the package natbib with any bibliography style you're comfortable with. The .bst file Chicago was used here, and agsm.bst has been included here for your convenience. 
+    \section*{Conflict of Interest}
+    The authors report there are no competing interests to declare.
 
     \bibliography{paper/references}
     \appendix

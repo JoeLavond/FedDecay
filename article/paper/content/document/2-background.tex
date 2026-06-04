@@ -28,12 +28,10 @@ Likewise, FedBN \citep{fedbn} and FedEM \citep{fedem}, which rely on insights fr
 Importantly, this work focuses on how including within-round learning rate decay can improve FL performance without significant extra computation or the need for additional models.
 Moreover, unlike the aforementioned meta-learning applications to FL, the learning rate decay can flexibly emphasize initial model performance and rapid personalization.
 We demonstrate that within-round learning rate decay is a generalization of FedAvg or Reptile, making them particularly relevant baselines for comparison.
-\edit{
 Several other works propose to improve the original FedAvg procedure.
 SCAFFOLD~\citep{scaffold} reduces client drift using control variates; FedProx~\citep{fedprox} adds a proximal penalty to the local objective to limit divergence from the global model; and FedAdam and FedYogi~\citep{fed-opt} apply adaptive moment estimation at the server during aggregation.
 Because these methods modify the global aggregation step or augment the local objective rather than the within-round learning rate schedule, they are orthogonal to FedDecay and could in principle be combined with our approach for further gains.
 Unlike our work, they do not exploit the local learning rate within a communication round to control the balance between initial model success and rapid personalization.
-}
 While we do not propose a PFL method by definition, since fine-tuning occurs after federated training, we include PFL methods in our comparisons to assess the performance gap between our process and PFL techniques.
 More recent PFL solutions exist, like \citet{knn-per}, but comparison with PFL solutions is not the main focus of our work.
 More importantly, experiments demonstrate consistent improvements compared to FedAvg and FOMAML and close the performance gap with PFL methods with a simple, interpretable learning rate modification without additional computational or memory overheads.

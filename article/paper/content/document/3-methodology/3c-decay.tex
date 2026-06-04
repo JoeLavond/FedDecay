@@ -12,10 +12,8 @@ Note, a within-round local learning rate of the form $\beta^{k - 1}$ in Equation
 Importantly, we next identify that the later local gradients are associated with rapid personalization.
 Thus, by introducing within-round local learning rate decay, we can place more relative emphasis on initial model success.
 
-\edit{
 For simplicity and theoretical tractability, we use a single shared decay coefficient $\beta$ applied uniformly across all users.
 A natural extension would allow each user to select a client-specific $\beta$ based on local data statistics; we discuss this avenue and its challenges in Section~\ref{decay-conclusion}.
-}
 
 This work primarily focuses on exponential decay, simplifying the mathematical justification for the benefits of within-round learning rate decay.
 Exponential decay allows us to explicitly compute the relative emphasis between initial model success (minimizing Equation~\ref{eq: ims}) and rapid personalization (minimizing Equation~\ref{eq: rp}).
@@ -61,10 +59,8 @@ When users possess similar data, a method consisting of only AvgGrad terms (FedS
 However, in cases where users' data diverges, an approach prioritizing AvgGradInner terms may be more suitable.
 Plausibly, most applications exist between the above two scenarios, especially for appropriate applications of federated learning.
 In such cases, a method striking a flexible balance between AvgGrad and AvgGradInner terms could yield superior performance across a spectrum of statistical data heterogeneity.
-\edit{
 In the extreme case where local datasets are highly dissimilar, existing work shows that standard FL already degrades substantially~\citep{fl-noniid}, and finding a shared model that generalizes well to all users becomes difficult regardless of the learning rate schedule.
 In our regime the optimal $\beta$ approaches one, recovering FedAvg, and the practitioner's tuned $\beta$ value therefore serves as an implicit diagnostic for inter-user similarity: small $\beta$ signals similar users for which a well-shared model is achievable, while $\beta \approx 1$ indicates that decay offers little additional benefit and PFL methods with per-user models should be considered.
-}
 Our experimental results in Section~\ref{sec: decay-exp} consistently conclude that some decay improves personalized performance compared to either no emphasis on rapid personalization (FedSGD) or no decay (FedAvg).
 Furthermore, in Appendix~\ref{app: decay-app-sens}, we highlight that the tuned values of $\beta$ are small for datasets with obvious similarities between users and large for datasets contrived to have a more extensive diversity between local datasets.
 

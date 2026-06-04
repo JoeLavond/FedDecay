@@ -1,1 +1,0 @@
-# JMLR Cover Letter Template
