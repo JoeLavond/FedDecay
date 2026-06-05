@@ -7,7 +7,7 @@ Paper source for *FedDecay: Balancing Model Performance and Rapid Personalizatio
 Run from this directory (`article/`). Requires `latexmk` and a standard TeX distribution (e.g. TeX Live, MacTeX).
 
 ```bash
-make jcgs   # builds paper/2_main_jcgs.pdf
+make jcgs   # builds paper/main_jcgs.pdf
 make clean  # remove all build artifacts
 ```
 
@@ -25,7 +25,7 @@ article/
 │   ├── run_costs.png
 │   └── sensitivity-analysis-best-beta.png
 └── paper/
-    ├── 2_main_jcgs.tex       # Main entry point
+    ├── main_jcgs.tex       # Main entry point
     ├── references.bib
     ├── source/               # Journal style files (.sty, .bst) and math_commands.tex
     └── content/
