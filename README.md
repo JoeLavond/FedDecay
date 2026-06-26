@@ -1,6 +1,7 @@
 # FedDecay
 
 Balancing Model Performance and Rapid Personalization in Federated Learning with Learning Rate Scheduling  
+
 Authors: Joseph Lavond, Minhao Cheng, and Yao Li
 
 ## Overview
@@ -8,8 +9,10 @@ Authors: Joseph Lavond, Minhao Cheng, and Yao Li
 This repository contains the code for our paper "FedDecay: Balancing Model Performance and Rapid Personalization in Federated Learning with Learning Rate Scheduling".
 
 We propose FedDecay, a method for improving federated learning on heterogeneous data by applying a within-round learning-rate decay to each client's local update steps.
-Later local steps, which drift furthest from the global model, are attenuated by a decay factor β; earlier steps, which stay close to the global optimum, are kept at full strength.
-The result is a better-aligned global update with no change to the communication protocol.
+We generalize the FedDecay procedure, after observing that the later local update steps are beneficial for finding a good initial model for personalization via fine-tuning. 
+For appplications with similar distributed data/users, few local steps or large decay can perform well for all users. 
+As users become more heterogeneous, it is more performative to find a good initialization and fine-tune. 
+We demonstrate that this generalization consistently outperforms a single local update step (FedSGD) and mutliple local update steps with equal step sizes (FedAvg). 
 
 This repository is a fork of [FederatedScope (pfl\_bench branch)](https://github.com/alibaba/FederatedScope/tree/Feature/pfl_bench).
 Three files were added and two files were modified relative to the upstream codebase.
