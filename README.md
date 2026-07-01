@@ -6,7 +6,7 @@ Authors: Joseph Lavond, Minhao Cheng, and Yao Li
 
 ## Overview
 
-This repository contains the code for our paper "FedDecay: Balancing Model Performance and Rapid Personalization in Federated Learning with Learning Rate Scheduling".
+This repository contains the code for our paper ["FedDecay: Balancing Model Performance and Rapid Personalization in Federated Learning with Learning Rate Scheduling."](https://www.tandfonline.com/doi/full/10.1080/10618600.2026.2696264).
 
 We propose FedDecay, a method for improving federated learning on heterogeneous data by applying a within-round learning-rate decay to each client's local update steps.
 We generalize the FedDecay procedure, after observing that the later local update steps are beneficial for finding a good initial model for personalization via fine-tuning. 
@@ -131,11 +131,17 @@ The full code structure for FedDecay-specific files is as follows:
 If you find our work useful, please consider citing our paper:
 
 ```bibtex
-@article{
-lavond2025feddecay,
-title={FedDecay: Balancing Model Performance and Rapid Personalization in Federated Learning with Learning Rate Scheduling},
-author={Joseph Lavond and Minhao Cheng and Yao Li},
-year={2025},
-url={https://github.com/JoeLavond/FedDecay}
+@article{Lavond29062026,
+author = {Joseph Lavond and Minhao Cheng and Yao Li},
+title = {FedDecay: Balancing Model Performance and Rapid Personalization in Federated Learning with Learning Rate Scheduling},
+journal = {Journal of Computational and Graphical Statistics},
+volume = {0},
+number = {ja},
+pages = {1--24},
+year = {2026},
+publisher = {Taylor \& Francis},
+doi = {10.1080/10618600.2026.2696264},
+URL = {https://doi.org/10.1080/10618600.2026.2696264},
+eprint = {https://doi.org/10.1080/10618600.2026.2696264} 
 }
 ```
